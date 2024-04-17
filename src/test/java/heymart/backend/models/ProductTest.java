@@ -26,7 +26,7 @@ public class ProductTest {
     @Test
     void testGetProductID() {
         UUID id = UUID.fromString("d6e2c1fd-0dd4-4be2-b2fb-efdc1c3c2c93");
-        assertEquals(id,  this.product.geProductId());
+        assertEquals(id,  this.product.getProductId());
     }
 
     @Test
