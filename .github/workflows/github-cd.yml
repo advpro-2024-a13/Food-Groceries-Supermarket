@@ -4,6 +4,7 @@ name: Build Deploy
 # We are triggering the action on any push to git
 on:
   pull_request:
+  push:
     branches:
       - dev
 
