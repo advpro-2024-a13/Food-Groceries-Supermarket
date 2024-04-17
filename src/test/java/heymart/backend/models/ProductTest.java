@@ -3,7 +3,6 @@ package heymart.backend.models;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class ProductTest {
@@ -48,7 +47,7 @@ public class ProductTest {
 
     @Test
     void testGetProductImagePath() {
-        assertEquals("https://sogood.id/wp-content/uploads/2018/08/FA_SG_Ayam_Utuh_Potong@10_1kg.png", this.product.getImagePath());
+        assertEquals("https://sogood.id/wp-content/uploads/2018/08/FA_SG_Ayam_Utuh_Potong@10_1kg.png", this.product.getProductImagePath());
     }
 
     @Test
