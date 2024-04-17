@@ -16,7 +16,6 @@ public class SupermarketTest {
 
     @BeforeEach
     void setUp() {
-        // Inisialisasi objek-objek yang dibutuhkan untuk pengujian
         owner = new User(1L, "johndoe", "john@example.com");
         productIds = new ArrayList<>();
         productIds.add(1L);
