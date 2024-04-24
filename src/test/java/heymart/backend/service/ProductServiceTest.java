@@ -31,7 +31,11 @@ class ProductServiceImplTest {
 
     @Test
     void testCreate() {
-        Product product = new Product();
+        Product product = new Product.Builder()
+                .productId(UUID.randomUUID())
+                .productName("Test Product")
+                .productQuantity(10)
+                .build();
         when(productRepository.createProduct(product)).thenReturn(product);
 
         Product createdProduct = productService.createProduct(product);
@@ -50,7 +54,11 @@ class ProductServiceImplTest {
 
     @Test
     void testEdit() {
-        Product product = new Product();
+        Product product = new Product.Builder()
+                .productId(UUID.randomUUID())
+                .productName("Test Product")
+                .productQuantity(10)
+                .build();
         productService.editProduct(product);
 
         verify(productRepository).editProduct(product);
@@ -59,7 +67,11 @@ class ProductServiceImplTest {
     @Test
     void testFindById() {
         UUID id = UUID.randomUUID();
-        Product product = new Product();
+        Product product = new Product.Builder()
+                .productId(id)
+                .productName("Test Product")
+                .productQuantity(10)
+                .build();
         when(productRepository.findByProductId(id)).thenReturn(product);
 
         Product foundProduct = productService.findByProductId(id);
@@ -72,20 +84,20 @@ class ProductServiceImplTest {
     public void testFindBySupermarketOwnerId() {
         List<Product> productList = new ArrayList<>();
 
-        Product product1 = new Product();
-        UUID id1 = UUID.randomUUID();
-        product1.setProductId(id1);
-        product1.setProductName("Kangkung");
-        product1.setProductQuantity(1);
-        product1.setSupermarketOwnerId(123L);
+        Product product1 = new Product.Builder()
+                .productId(UUID.randomUUID())
+                .productName("Kangkung")
+                .productQuantity(1)
+                .supermarketOwnerId(123L)
+                .build();
         productList.add(product1);
 
-        Product product2 = new Product();
-        UUID id2 = UUID.randomUUID();
-        product2.setProductId(id2);
-        product2.setProductName("Bayam");
-        product2.setProductQuantity(2);
-        product2.setSupermarketOwnerId(123L);
+        Product product2 = new Product.Builder()
+                .productId(UUID.randomUUID())
+                .productName("Bayam")
+                .productQuantity(2)
+                .supermarketOwnerId(123L)
+                .build();
         productList.add(product2);
 
         when(productRepository.findBySupermarketOwnerId(123L)).thenReturn(productList);
@@ -105,18 +117,18 @@ class ProductServiceImplTest {
     void testFindAllProduct() {
         List<Product> productList = new ArrayList<>();
 
-        Product product1 = new Product();
-        UUID id1 = UUID.randomUUID();
-        product1.setProductId(id1);
-        product1.setProductName("Kangkung");
-        product1.setProductQuantity(1);
+        Product product1 = new Product.Builder()
+                .productId(UUID.randomUUID())
+                .productName("Kangkung")
+                .productQuantity(1)
+                .build();
         productList.add(product1);
 
-        Product product2 = new Product();
-        UUID id2 = UUID.randomUUID();
-        product2.setProductId(id2);
-        product2.setProductName("Bayam");
-        product2.setProductQuantity(2);
+        Product product2 = new Product.Builder()
+                .productId(UUID.randomUUID())
+                .productName("Bayam")
+                .productQuantity(2)
+                .build();
         productList.add(product2);
 
         Iterator<Product> iterator = productList.iterator();
