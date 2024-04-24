@@ -27,8 +27,9 @@ public class ProductRepositoryTest {
     @Test
     public void testFindByProductIdFound() {
         UUID productId = UUID.randomUUID();
-        Product product = new Product();
-        product.setProductId(productId);
+        Product product = new Product.Builder()
+                .productId(productId)
+                .build();
         when(productData.iterator()).thenReturn(new ArrayList<Product>(){{ add(product); }}.iterator());
 
         Product foundProduct = productRepository.findByProductId(productId);
@@ -48,10 +49,12 @@ public class ProductRepositoryTest {
     @Test
     public void testFindBySupermarketOwnerIdFound() {
         Long ownerId = 123L;
-        Product product1 = new Product();
-        Product product2 = new Product();
-        product1.setSupermarketOwnerId(ownerId);
-        product2.setSupermarketOwnerId(ownerId);
+        Product product1 = new Product.Builder()
+                .supermarketOwnerId(ownerId)
+                .build();
+        Product product2 = new Product.Builder()
+                .supermarketOwnerId(ownerId)
+                .build();
         List<Product> productList = new ArrayList<Product>() {{
             add(product1);
             add(product2);
