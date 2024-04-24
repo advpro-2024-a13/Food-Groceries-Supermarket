@@ -8,15 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SupermarketTest {
-
     private Supermarket supermarket;
     private Long managerId;
-
     private List<Long> productIds = new ArrayList<>();
     @BeforeEach
     void setUp() {
         managerId = 1L;
-        supermarket = new Supermarket(1L, "Supermarket ABC", managerId, productIds);
+        supermarket = new Supermarket.Builder()
+                        .setId(1L)
+                        .setName("Supermarket ABC")
+                        .setOwnerId(managerId)
+                        .setProductIds(productIds)
+                        .build();
     }
 
     @Test

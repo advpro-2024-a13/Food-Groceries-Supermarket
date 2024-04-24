@@ -10,13 +10,13 @@ import lombok.Setter;
 public class Supermarket {
     private Long id;
     private String name;
-    private User owner;
+    private Long ownerId;
     private List<Long> productIds;
 
     private Supermarket(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
-        this.owner = builder.owner;
+        this.ownerId = builder.ownerId;
         this.productIds = builder.productIds;
     }
 
@@ -36,7 +36,7 @@ public class Supermarket {
     public static class Builder {
         private Long id;
         private String name;
-        private User owner;
+        private Long ownerId;
         private List<Long> productIds;
 
         public Builder setId(Long id) {
@@ -49,8 +49,8 @@ public class Supermarket {
             return this;
         }
 
-        public Builder setOwner(User owner) {
-            this.owner = owner;
+        public Builder setOwnerId(Long ownerId) {
+            this.ownerId = ownerId;
             return this;
         }
 
