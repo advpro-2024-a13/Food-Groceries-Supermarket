@@ -1,3 +1,5 @@
+package heymart.backend.repository;
+
 import heymart.backend.models.Supermarket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +58,7 @@ public class SupermarketRepositoryTest {
 
     @Test
     void testFindAll() {
-        Supermarket supermarket2 = Supermarket.Builder()
+        Supermarket supermarket2 = new Supermarket.Builder()
                 .setId(2L)
                 .setName("Supermarket XYZ")
                 .setOwnerId(2L)
