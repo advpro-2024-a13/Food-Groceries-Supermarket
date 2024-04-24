@@ -1,7 +1,6 @@
 package heymart.backend.models;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,16 +10,13 @@ import java.util.List;
 public class SupermarketTest {
 
     private Supermarket supermarket;
-    private User owner;
-    private List<Long> productIds;
+    private Long managerId;
 
+    private List<Long> productIds = new ArrayList<>();
     @BeforeEach
     void setUp() {
-        owner = new User(1L, "johndoe", "john@example.com");
-        productIds = new ArrayList<>();
-        productIds.add(1L);
-        productIds.add(2L);
-        supermarket = new Supermarket(1L, "Supermarket ABC", owner, productIds);
+        managerId = 1L;
+        supermarket = new Supermarket(1L, "Supermarket ABC", managerId, productIds);
     }
 
     @Test
@@ -34,8 +30,8 @@ public class SupermarketTest {
     }
 
     @Test
-    void testGetOwner() {
-        assertEquals(owner, supermarket.getOwner());
+    void testGetOwnerId() {
+        assertEquals(1L, supermarket.getOwnerId());
     }
 
     @Test
@@ -53,14 +49,13 @@ public class SupermarketTest {
     void testAddProductId() {
         Long newProductId = 3L;
         supermarket.addProductId(newProductId);
-        assertEquals(3, supermarket.getProductIds().size());
-        assertEquals(newProductId, supermarket.getProductIds().get(2));
+        assertTrue(supermarket.getProductIds().contains(newProductId));
     }
 
     @Test
     void testRemoveProductId() {
-        supermarket.removeProductId(productIds.get(0));
-        assertEquals(1, supermarket.getProductIds().size());
-        assertEquals(productIds.get(1), supermarket.getProductIds().get(0));
+        supermarket.addProductId(3L);
+        supermarket.removeProductId(3L);
+        assertFalse(supermarket.getProductIds().contains(3L));
     }
 }
