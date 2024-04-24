@@ -28,11 +28,11 @@ class ProductControllerTest {
 
     @Test
     void testCreateProduct() {
-        Product product = new Product();
-        UUID productId = UUID.randomUUID();
-        product.setProductId(productId);
-        product.setProductName("Test Product");
-        product.setProductQuantity(10);
+        Product product = new Product.Builder()
+                .productId(UUID.randomUUID())
+                .productName("Test Product")
+                .productQuantity(10)
+                .build();
 
         when(productService.createProduct(any(Product.class))).thenReturn(product);
 
@@ -56,11 +56,11 @@ class ProductControllerTest {
 
     @Test
     void testEditProduct() {
-        Product product = new Product();
-        UUID productId = UUID.randomUUID();
-        product.setProductId(productId);
-        product.setProductName("Updated Product");
-        product.setProductQuantity(20);
+        Product product = new Product.Builder()
+                .productId(UUID.randomUUID())
+                .productName("Updated Product")
+                .productQuantity(20)
+                .build();
 
         ResponseEntity<?> responseEntity = productController.editProduct(product);
 
@@ -72,10 +72,11 @@ class ProductControllerTest {
     @Test
     void testFindByProductId() {
         UUID productId = UUID.randomUUID();
-        Product product = new Product();
-        product.setProductId(productId);
-        product.setProductName("Test Product");
-        product.setProductQuantity(10);
+        Product product = new Product.Builder()
+                .productId(productId)
+                .productName("Test Product")
+                .productQuantity(10)
+                .build();
 
         when(productService.findByProductId(productId)).thenReturn(product);
 
@@ -90,15 +91,17 @@ class ProductControllerTest {
     void testFindBySupermarketOwnerId() {
         Long ownerId = 123L;
         List<Product> productList = new ArrayList<>();
-        Product product1 = new Product();
-        product1.setProductId(UUID.randomUUID());
-        product1.setProductName("Product 1");
-        product1.setProductQuantity(10);
+        Product product1 = new Product.Builder()
+                .productId(UUID.randomUUID())
+                .productName("Product 1")
+                .productQuantity(10)
+                .build();
         productList.add(product1);
-        Product product2 = new Product();
-        product2.setProductId(UUID.randomUUID());
-        product2.setProductName("Product 2");
-        product2.setProductQuantity(20);
+        Product product2 = new Product.Builder()
+                .productId(UUID.randomUUID())
+                .productName("Product 2")
+                .productQuantity(20)
+                .build();
         productList.add(product2);
 
         when(productService.findBySupermarketOwnerId(ownerId)).thenReturn(productList);
@@ -113,15 +116,17 @@ class ProductControllerTest {
     @Test
     void testFindAllProducts() {
         List<Product> productList = new ArrayList<>();
-        Product product1 = new Product();
-        product1.setProductId(UUID.randomUUID());
-        product1.setProductName("Product 1");
-        product1.setProductQuantity(10);
+        Product product1 = new Product.Builder()
+                .productId(UUID.randomUUID())
+                .productName("Product 1")
+                .productQuantity(10)
+                .build();
         productList.add(product1);
-        Product product2 = new Product();
-        product2.setProductId(UUID.randomUUID());
-        product2.setProductName("Product 2");
-        product2.setProductQuantity(20);
+        Product product2 = new Product.Builder()
+                .productId(UUID.randomUUID())
+                .productName("Product 2")
+                .productQuantity(20)
+                .build();
         productList.add(product2);
 
         when(productService.findAllProducts()).thenReturn(productList);
