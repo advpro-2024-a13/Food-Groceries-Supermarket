@@ -11,7 +11,7 @@ import java.util.UUID;
 public class ProductRepository {
     private List<Product> productData = new ArrayList<>();
 
-    public Product create(Product product) {
+    public Product createProduct(Product product) {
         productData.add(product);
         return product;
     }
@@ -49,7 +49,6 @@ public class ProductRepository {
 
     public List<Product> findBySupermarketOwnerId(Long ownerId) {
         List<Product> productsOwnedByOwner = new ArrayList<>();
-        // Check if productData is not null before iterating over it
         if (productData != null) {
             for (Product product : productData) {
                 if (product.getSupermarketOwnerId().equals(ownerId)) {
