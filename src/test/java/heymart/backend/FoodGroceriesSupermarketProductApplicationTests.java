@@ -8,6 +8,7 @@ class FoodGroceriesSupermarketProductApplicationTests {
 
 	@Test
 	void contextLoads() {
+		FoodGroceriesSupermarketProductApplication.main(new String[] {});
 	}
 
 }

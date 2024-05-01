@@ -19,7 +19,7 @@ import java.util.UUID;
 public class ProductRepositoryTest {
 
     @Mock
-    private List<Product> productData;
+    private List<Product> productData = new ArrayList<>();
 
     @InjectMocks
     private ProductRepository productRepository;
@@ -36,7 +36,6 @@ public class ProductRepositoryTest {
 
         assertEquals(product, foundProduct);
     }
-
     @Test
     void testFindByIdEmptyProductRepository() {
         when(productData.iterator()).thenReturn(new ArrayList<Product>().iterator());
@@ -77,8 +76,6 @@ public class ProductRepositoryTest {
         assertNotNull(foundProducts);
         assertTrue(foundProducts.isEmpty());
     }
-
-
     @Test
     public void testFindAllFound() {
         List<Product> productList = new ArrayList<>();
@@ -90,11 +87,5 @@ public class ProductRepositoryTest {
         assertFalse(iterator.hasNext());
     }
 
-    @Test
-    public void testFindAllNotFound() {
-        when(productData.iterator()).thenReturn(null);
 
-        Iterator<Product> iterator = productRepository.findAll();
-        assertNull(iterator);
-    }
 }

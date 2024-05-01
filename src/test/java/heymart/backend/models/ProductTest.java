@@ -36,6 +36,11 @@ public class ProductTest {
     }
 
     @Test
+    void testGetProductQuantity() {
+        assertEquals(100, this.product.getProductQuantity());
+    }
+
+    @Test
     void testGetProductCategory() {
         assertEquals("Bahan Makanan", this.product.getProductCategory());
     }

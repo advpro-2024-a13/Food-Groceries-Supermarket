@@ -70,7 +70,7 @@ class ProductControllerTest {
     }
 
     @Test
-    void testFindByProductId() {
+    void testFindByProductIdFound() {
         UUID productId = UUID.randomUUID();
         Product product = new Product.Builder()
                 .productId(productId)
@@ -84,6 +84,19 @@ class ProductControllerTest {
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(product, responseEntity.getBody());
+        verify(productService, times(1)).findByProductId(productId);
+    }
+
+    @Test
+    void testFindByProductIdNotFound() {
+        UUID productId = UUID.randomUUID();
+
+        when(productService.findByProductId(productId)).thenReturn(null);
+
+        ResponseEntity<?> responseEntity = productController.findByProductId(productId);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Product not found with ID " + productId, responseEntity.getBody());
         verify(productService, times(1)).findByProductId(productId);
     }
 
