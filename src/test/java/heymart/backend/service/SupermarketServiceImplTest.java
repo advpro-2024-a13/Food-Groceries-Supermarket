@@ -1,3 +1,5 @@
+package heymart.backend.service;
+
 import heymart.backend.models.Supermarket;
 import heymart.backend.repository.SupermarketRepository;
 import heymart.backend.service.SupermarketServiceImpl;
