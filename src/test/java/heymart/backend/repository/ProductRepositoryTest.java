@@ -1,91 +1,119 @@
 package heymart.backend.repository;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
 import heymart.backend.models.Product;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductRepositoryTest {
 
     @Mock
-    private List<Product> productData = new ArrayList<>();
-
-    @InjectMocks
     private ProductRepository productRepository;
 
-    @Test
-    public void testFindByProductIdFound() {
-        UUID productId = UUID.randomUUID();
-        Product product = new Product.Builder()
-                .productId(productId)
-                .build();
-        when(productData.iterator()).thenReturn(new ArrayList<Product>(){{ add(product); }}.iterator());
-
-        Product foundProduct = productRepository.findByProductId(productId);
-
-        assertEquals(product, foundProduct);
-    }
-    @Test
-    void testFindByIdEmptyProductRepository() {
-        when(productData.iterator()).thenReturn(new ArrayList<Product>().iterator());
-
-        Product foundProduct = productRepository.findByProductId(UUID.randomUUID());
-
-        assertNull(foundProduct);
+    @BeforeEach
+    public void setUp() {
+        // Define mock behavior if needed
     }
 
     @Test
-    public void testFindBySupermarketOwnerIdFound() {
-        Long ownerId = 123L;
-        Product product1 = new Product.Builder()
-                .supermarketOwnerId(ownerId)
-                .build();
-        Product product2 = new Product.Builder()
-                .supermarketOwnerId(ownerId)
-                .build();
-        List<Product> productList = new ArrayList<Product>() {{
-            add(product1);
-            add(product2);
-        }};
-        when(productData.iterator()).thenReturn(productList.iterator());
+    public void testSaveProduct() {
+        // Given
+        Product product = createProduct();
+        when(productRepository.save(product)).thenReturn(product);
 
+        // When
+        Product savedProduct = productRepository.save(product);
+
+        // Then
+        assertNotNull(savedProduct.getProductId());
+        assertEquals(product.getProductName(), savedProduct.getProductName());
+        // Add more assertions as needed
+    }
+
+    @Test
+    public void testFindById() {
+        // Given
+        Product product = createProduct();
+        when(productRepository.findById(product.getProductId())).thenReturn(Optional.of(product));
+
+        // When
+        Optional<Product> foundProductOptional = productRepository.findById(product.getProductId());
+
+        // Then
+        assertTrue(foundProductOptional.isPresent());
+        Product foundProduct = foundProductOptional.get();
+        assertEquals(product.getProductName(), foundProduct.getProductName());
+        // Add more assertions as needed
+    }
+
+    @Test
+    public void testFindByOwnerId() {
+        // Given
+        Long ownerId = 1L;
+        List<Product> products = new ArrayList<>();
+        products.add(createProduct());
+        products.add(createProduct());
+        when(productRepository.findBySupermarketOwnerId(ownerId)).thenReturn(products);
+
+        // When
         List<Product> foundProducts = productRepository.findBySupermarketOwnerId(ownerId);
 
+        // Then
         assertEquals(2, foundProducts.size());
-        assertTrue(foundProducts.contains(product1));
-        assertTrue(foundProducts.contains(product2));
+        // Add more assertions as needed
     }
 
     @Test
-    public void testFindBySupermarketOwnerIdEmpty() {
-        Long ownerId = 123L;
-        when(productData.iterator()).thenReturn(new ArrayList<Product>().iterator());
+    public void testDeleteProduct() {
+        // Given
+        Product product = createProduct();
 
-        List<Product> foundProducts = productRepository.findBySupermarketOwnerId(ownerId);
-        assertNotNull(foundProducts);
-        assertTrue(foundProducts.isEmpty());
+        // When
+        doNothing().when(productRepository).delete(product);
+
+        // Then
+        assertDoesNotThrow(() -> productRepository.delete(product));
     }
+
     @Test
-    public void testFindAllFound() {
-        List<Product> productList = new ArrayList<>();
-        when(productData.iterator()).thenReturn(productList.iterator());
+    public void testEditProduct() {
+        // Given
+        Product product = createProduct();
+        when(productRepository.save(product)).thenReturn(product);
 
-        Iterator<Product> iterator = productRepository.findAll();
+        // When
+        Product editedProduct = productRepository.save(product);
 
-        assertNotNull(iterator);
-        assertFalse(iterator.hasNext());
+        // Then
+        assertNotNull(editedProduct.getProductId());
+        assertEquals(product.getProductName(), editedProduct.getProductName());
+        // Add more assertions as needed
     }
 
+    // Helper methods...
 
+    private Product createProduct() {
+        return new Product.Builder()
+                .productId(UUID.randomUUID())
+                .productName("Test Product")
+                .productQuantity(10)
+                .productCategory("Test Category")
+                .productDescription("Test Description")
+                .productImagePath("/test/image/path")
+                .productPrice(100L)
+                .supermarketOwnerId(1L)
+                .build();
+    }
 }

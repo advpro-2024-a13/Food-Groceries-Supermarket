@@ -7,10 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,20 +35,28 @@ class ProductServiceImplTest {
                 .productName("Test Product")
                 .productQuantity(10)
                 .build();
-        when(productRepository.createProduct(product)).thenReturn(product);
 
+        // Mock the behavior of productRepository.save()
+        when(productRepository.save(product)).thenReturn(product);
+
+        // Call the service method
         Product createdProduct = productService.createProduct(product);
 
+        // Verify the result
         assertEquals(product, createdProduct);
-        verify(productRepository).createProduct(product);
+        // Verify that productRepository.save() was called once with the specified product
+        verify(productRepository, times(1)).save(product);
     }
 
     @Test
     void testDelete() {
         UUID id = UUID.randomUUID();
+
+        // Call the service method
         productService.deleteProduct(id);
 
-        verify(productRepository).deleteProduct(id);
+        // Verify that productRepository.deleteById() was called once with the specified ID
+        verify(productRepository, times(1)).deleteById(id);
     }
 
     @Test
@@ -59,9 +66,12 @@ class ProductServiceImplTest {
                 .productName("Test Product")
                 .productQuantity(10)
                 .build();
+
+        // Call the service method
         productService.editProduct(product);
 
-        verify(productRepository).editProduct(product);
+        // Verify that productRepository.save() was called once with the specified product
+        verify(productRepository, times(1)).save(product);
     }
 
     @Test
@@ -72,23 +82,29 @@ class ProductServiceImplTest {
                 .productName("Test Product")
                 .productQuantity(10)
                 .build();
-        when(productRepository.findByProductId(id)).thenReturn(product);
 
+        // Mock the behavior of productRepository.findById()
+        when(productRepository.findById(id)).thenReturn(java.util.Optional.of(product));
+
+        // Call the service method
         Product foundProduct = productService.findByProductId(id);
 
+        // Verify the result
         assertEquals(product, foundProduct);
-        verify(productRepository).findByProductId(id);
+        // Verify that productRepository.findById() was called once with the specified ID
+        verify(productRepository, times(1)).findById(id);
     }
 
     @Test
     public void testFindBySupermarketOwnerId() {
+        Long ownerId = 123L;
         List<Product> productList = new ArrayList<>();
 
         Product product1 = new Product.Builder()
                 .productId(UUID.randomUUID())
                 .productName("Kangkung")
                 .productQuantity(1)
-                .supermarketOwnerId(123L)
+                .supermarketOwnerId(ownerId)
                 .build();
         productList.add(product1);
 
@@ -96,22 +112,25 @@ class ProductServiceImplTest {
                 .productId(UUID.randomUUID())
                 .productName("Bayam")
                 .productQuantity(2)
-                .supermarketOwnerId(123L)
+                .supermarketOwnerId(ownerId)
                 .build();
         productList.add(product2);
 
-        when(productRepository.findBySupermarketOwnerId(123L)).thenReturn(productList);
+        // Mock the behavior of productRepository.findBySupermarketOwnerId()
+        when(productRepository.findBySupermarketOwnerId(ownerId)).thenReturn(productList);
 
-        List<Product> result = productService.findBySupermarketOwnerId(123L);
+        // Call the service method
+        List<Product> result = productService.findBySupermarketOwnerId(ownerId);
 
+        // Verify the result
         assertEquals(productList.size(), result.size());
         for (int i = 0; i < productList.size(); i++) {
             assertEquals(productList.get(i), result.get(i));
         }
 
-        verify(productRepository, times(1)).findBySupermarketOwnerId(123L);
+        // Verify that productRepository.findBySupermarketOwnerId() was called once with the specified owner ID
+        verify(productRepository, times(1)).findBySupermarketOwnerId(ownerId);
     }
-
 
     @Test
     void testFindAllProduct() {
@@ -131,16 +150,19 @@ class ProductServiceImplTest {
                 .build();
         productList.add(product2);
 
-        Iterator<Product> iterator = productList.iterator();
-        when(productRepository.findAll()).thenReturn(iterator);
+        // Mock the behavior of productRepository.findAll()
+        when(productRepository.findAll()).thenReturn(productList);
 
+        // Call the service method
         List<Product> result = productService.findAllProducts();
 
+        // Verify the result
         assertEquals(productList.size(), result.size());
         for (int i = 0; i < productList.size(); i++) {
             assertEquals(productList.get(i), result.get(i));
         }
 
+        // Verify that productRepository.findAll() was called once
         verify(productRepository, times(1)).findAll();
     }
 }
