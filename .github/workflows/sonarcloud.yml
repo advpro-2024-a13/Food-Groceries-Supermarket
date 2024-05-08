@@ -32,3 +32,8 @@ jobs:
               -Dsonar.organization=advpro-2024-a13
               -Dsonar.projectKey=advpro-2024-a13_Food-Groceries-Supermarket-Product
               -Dsonar.java.binaries=build/classes/java/main/heymart/backend,build/classes/java/main/heymart/backend/models,build/classes/java/main/heymart/backend/controller,build/classes/java/main/heymart/backend/repository,build/classes/java/main/heymart/backend/service
+              -Dsonar.java.libraries=build/libs/*.jar
+              -Dsonar.gradle.skipCompile=true
+              -Dsonar.java.test.binaries=build/classes/java/test/heymart/backend,build/classes/java/test/heymart/backend/models,build/classes/java/test/heymart/backend/controller,build/classes/java/test/heymart/backend/repository,build/classes/java/test/heymart/backend/service
+              -Dsonar.junit.reportPaths=build/test-results/test
+              -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml
