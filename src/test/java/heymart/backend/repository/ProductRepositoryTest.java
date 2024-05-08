@@ -22,11 +22,6 @@ public class ProductRepositoryTest {
     @Mock
     private ProductRepository productRepository;
 
-    @BeforeEach
-    public void setUp() {
-        // Define mock behavior if needed
-    }
-
     @Test
     public void testSaveProduct() {
         // Given
@@ -105,7 +100,7 @@ public class ProductRepositoryTest {
     // Helper methods...
 
     private Product createProduct() {
-        return new Product.Builder()
+        return Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Test Product")
                 .productQuantity(10)

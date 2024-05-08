@@ -74,12 +74,10 @@ tasks.withType<Test>().configureEach {
 }
 
 tasks.test {
-	filter {
-		excludeTestsMatching("*FunctionalTest")
-	}
-
+	useJUnitPlatform()
 	finalizedBy(tasks.jacocoTestReport)
 }
+
 
 tasks.jacocoTestReport {
 	dependsOn(tasks.test)

@@ -15,7 +15,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-class ProductServiceImplTest {
+class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
@@ -30,7 +30,7 @@ class ProductServiceImplTest {
 
     @Test
     void testCreate() {
-        Product product = new Product.Builder()
+        Product product = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Test Product")
                 .productQuantity(10)
@@ -61,7 +61,7 @@ class ProductServiceImplTest {
 
     @Test
     void testEdit() {
-        Product product = new Product.Builder()
+        Product product = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Test Product")
                 .productQuantity(10)
@@ -77,7 +77,7 @@ class ProductServiceImplTest {
     @Test
     void testFindById() {
         UUID id = UUID.randomUUID();
-        Product product = new Product.Builder()
+        Product product = Product.builder()
                 .productId(id)
                 .productName("Test Product")
                 .productQuantity(10)
@@ -100,7 +100,7 @@ class ProductServiceImplTest {
         Long ownerId = 123L;
         List<Product> productList = new ArrayList<>();
 
-        Product product1 = new Product.Builder()
+        Product product1 = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Kangkung")
                 .productQuantity(1)
@@ -108,7 +108,7 @@ class ProductServiceImplTest {
                 .build();
         productList.add(product1);
 
-        Product product2 = new Product.Builder()
+        Product product2 = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Bayam")
                 .productQuantity(2)
@@ -136,14 +136,14 @@ class ProductServiceImplTest {
     void testFindAllProduct() {
         List<Product> productList = new ArrayList<>();
 
-        Product product1 = new Product.Builder()
+        Product product1 = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Kangkung")
                 .productQuantity(1)
                 .build();
         productList.add(product1);
 
-        Product product2 = new Product.Builder()
+        Product product2 = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Bayam")
                 .productQuantity(2)

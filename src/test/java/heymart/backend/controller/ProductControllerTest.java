@@ -28,7 +28,7 @@ class ProductControllerTest {
 
     @Test
     void testCreateProduct() {
-        Product product = new Product.Builder()
+        Product product = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Test Product")
                 .productQuantity(10)
@@ -56,7 +56,7 @@ class ProductControllerTest {
 
     @Test
     void testEditProduct() {
-        Product product = new Product.Builder()
+        Product product = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Updated Product")
                 .productQuantity(20)
@@ -72,7 +72,7 @@ class ProductControllerTest {
     @Test
     void testFindByProductIdFound() {
         UUID productId = UUID.randomUUID();
-        Product product = new Product.Builder()
+        Product product = Product.builder()
                 .productId(productId)
                 .productName("Test Product")
                 .productQuantity(10)
@@ -104,13 +104,13 @@ class ProductControllerTest {
     void testFindBySupermarketOwnerId() {
         Long ownerId = 123L;
         List<Product> productList = new ArrayList<>();
-        Product product1 = new Product.Builder()
+        Product product1 = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Product 1")
                 .productQuantity(10)
                 .build();
         productList.add(product1);
-        Product product2 = new Product.Builder()
+        Product product2 = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Product 2")
                 .productQuantity(20)
@@ -129,13 +129,13 @@ class ProductControllerTest {
     @Test
     void testFindAllProducts() {
         List<Product> productList = new ArrayList<>();
-        Product product1 = new Product.Builder()
+        Product product1 = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Product 1")
                 .productQuantity(10)
                 .build();
         productList.add(product1);
-        Product product2 = new Product.Builder()
+        Product product2 = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Product 2")
                 .productQuantity(20)
