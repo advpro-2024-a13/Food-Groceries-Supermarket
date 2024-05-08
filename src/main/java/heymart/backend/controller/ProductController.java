@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/product")
@@ -17,42 +18,44 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createProduct(@RequestBody Product product) {
-        Product createdProduct = productService.createProduct(product);
-        return ResponseEntity.ok(createdProduct);
+    public CompletableFuture<ResponseEntity<?>> createProduct(@RequestBody Product product) {
+        return productService.createProduct(product)
+                .thenApply(ResponseEntity::ok);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable UUID id) {
-        productService.deleteProduct(id);
-        return ResponseEntity.ok("Product with ID " + id + " deleted.");
+    public CompletableFuture<ResponseEntity<?>> deleteProduct(@PathVariable UUID id) {
+        return productService.deleteProduct(id)
+                .thenApply(deleted -> ResponseEntity.ok("Product with ID " + id + " deleted."));
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<?> editProduct(@RequestBody Product product) {
-        productService.editProduct(product);
-        return ResponseEntity.ok("Product edited successfully.");
+    public CompletableFuture<ResponseEntity<?>> editProduct(@RequestBody Product product) {
+        return productService.editProduct(product)
+                .thenApply(updated -> ResponseEntity.ok("Product edited successfully."));
     }
 
     @GetMapping("/findById/{id}")
-    public ResponseEntity<?> findByProductId(@PathVariable UUID id) {
-        Product product = productService.findByProductId(id);
-        if (product != null) {
-            return ResponseEntity.ok(product);
-        } else {
-            return ResponseEntity.badRequest().body("Product not found with ID " + id);
-        }
+    public CompletableFuture<ResponseEntity<?>> findByProductId(@PathVariable UUID id) {
+        return productService.findByProductId(id)
+                .thenApply(product -> {
+                    if (product != null) {
+                        return ResponseEntity.ok(product);
+                    } else {
+                        return ResponseEntity.badRequest().body("Product not found with ID " + id);
+                    }
+                });
     }
 
     @GetMapping("/findByOwnerId/{ownerId}")
-    public ResponseEntity<?> findBySupermarketOwnerId(@PathVariable Long ownerId) {
-        List<Product> products = productService.findBySupermarketOwnerId(ownerId);
-        return ResponseEntity.ok(products);
+    public CompletableFuture<ResponseEntity<?>> findBySupermarketOwnerId(@PathVariable Long ownerId) {
+        return productService.findBySupermarketOwnerId(ownerId)
+                .thenApply(ResponseEntity::ok);
     }
 
     @GetMapping("/findAll")
-    public ResponseEntity<?> findAllProducts() {
-        List<Product> products = productService.findAllProducts();
-        return ResponseEntity.ok(products);
+    public CompletableFuture<ResponseEntity<?>> findAllProducts() {
+        return productService.findAllProducts()
+                .thenApply(ResponseEntity::ok);
     }
 }

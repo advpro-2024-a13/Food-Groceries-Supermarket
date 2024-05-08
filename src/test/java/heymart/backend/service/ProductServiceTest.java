@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -29,53 +29,47 @@ class ProductServiceTest {
     }
 
     @Test
-    void testCreate() {
+    void testCreate() throws ExecutionException, InterruptedException {
         Product product = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Test Product")
                 .productQuantity(10)
                 .build();
 
-        // Mock the behavior of productRepository.save()
         when(productRepository.save(product)).thenReturn(product);
 
-        // Call the service method
-        Product createdProduct = productService.createProduct(product);
+        Product createdProduct = productService.createProduct(product).get();
 
-        // Verify the result
         assertEquals(product, createdProduct);
-        // Verify that productRepository.save() was called once with the specified product
         verify(productRepository, times(1)).save(product);
     }
 
     @Test
-    void testDelete() {
+    void testDelete() throws ExecutionException, InterruptedException {
         UUID id = UUID.randomUUID();
 
-        // Call the service method
-        productService.deleteProduct(id);
+        CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
+        productService.deleteProduct(id).get();
 
-        // Verify that productRepository.deleteById() was called once with the specified ID
         verify(productRepository, times(1)).deleteById(id);
     }
 
     @Test
-    void testEdit() {
+    void testEdit() throws ExecutionException, InterruptedException {
         Product product = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Test Product")
                 .productQuantity(10)
                 .build();
 
-        // Call the service method
-        productService.editProduct(product);
+        CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
+        productService.editProduct(product).get();
 
-        // Verify that productRepository.save() was called once with the specified product
         verify(productRepository, times(1)).save(product);
     }
 
     @Test
-    void testFindById() {
+    void testFindById() throws ExecutionException, InterruptedException {
         UUID id = UUID.randomUUID();
         Product product = Product.builder()
                 .productId(id)
@@ -83,20 +77,16 @@ class ProductServiceTest {
                 .productQuantity(10)
                 .build();
 
-        // Mock the behavior of productRepository.findById()
         when(productRepository.findById(id)).thenReturn(java.util.Optional.of(product));
 
-        // Call the service method
-        Product foundProduct = productService.findByProductId(id);
+        Product foundProduct = productService.findByProductId(id).get();
 
-        // Verify the result
         assertEquals(product, foundProduct);
-        // Verify that productRepository.findById() was called once with the specified ID
         verify(productRepository, times(1)).findById(id);
     }
 
     @Test
-    public void testFindBySupermarketOwnerId() {
+    public void testFindBySupermarketOwnerId() throws ExecutionException, InterruptedException {
         Long ownerId = 123L;
         List<Product> productList = new ArrayList<>();
 
@@ -116,24 +106,20 @@ class ProductServiceTest {
                 .build();
         productList.add(product2);
 
-        // Mock the behavior of productRepository.findBySupermarketOwnerId()
         when(productRepository.findBySupermarketOwnerId(ownerId)).thenReturn(productList);
 
-        // Call the service method
-        List<Product> result = productService.findBySupermarketOwnerId(ownerId);
+        List<Product> result = productService.findBySupermarketOwnerId(ownerId).get();
 
-        // Verify the result
         assertEquals(productList.size(), result.size());
         for (int i = 0; i < productList.size(); i++) {
             assertEquals(productList.get(i), result.get(i));
         }
 
-        // Verify that productRepository.findBySupermarketOwnerId() was called once with the specified owner ID
         verify(productRepository, times(1)).findBySupermarketOwnerId(ownerId);
     }
 
     @Test
-    void testFindAllProduct() {
+    void testFindAllProduct() throws ExecutionException, InterruptedException {
         List<Product> productList = new ArrayList<>();
 
         Product product1 = Product.builder()
@@ -150,19 +136,15 @@ class ProductServiceTest {
                 .build();
         productList.add(product2);
 
-        // Mock the behavior of productRepository.findAll()
         when(productRepository.findAll()).thenReturn(productList);
 
-        // Call the service method
-        List<Product> result = productService.findAllProducts();
+        List<Product> result = productService.findAllProducts().get();
 
-        // Verify the result
         assertEquals(productList.size(), result.size());
         for (int i = 0; i < productList.size(); i++) {
             assertEquals(productList.get(i), result.get(i));
         }
 
-        // Verify that productRepository.findAll() was called once
         verify(productRepository, times(1)).findAll();
     }
 }
