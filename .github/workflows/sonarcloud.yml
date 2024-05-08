@@ -20,8 +20,8 @@ jobs:
             java-version: '21'
       -   name: Make ./gradlew executable
           run: chmod +x ./gradlew
-      -   name: Build with Gradle without test
-          run: ./gradlew build -x test
+      -   name: Build with Gradle with test
+          run: ./gradlew build
       -   name: SonarCloud Scan
           uses: sonarsource/sonarcloud-github-action@master
           env:
