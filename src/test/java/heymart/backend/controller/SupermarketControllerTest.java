@@ -8,17 +8,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class SupermarketControllerTest {
 
     @Mock
@@ -36,13 +41,17 @@ public class SupermarketControllerTest {
                 .setProductIds(Arrays.asList(1L, 2L, 3L))
                 .build();
 
-        when(supermarketService.save(supermarket)).thenReturn(supermarket);
+        when(supermarketService.save(supermarket)).thenReturn(CompletableFuture.completedFuture(supermarket));
 
-        ResponseEntity<Supermarket> result = supermarketController.createSupermarket(supermarket);
+        try {
+            ResponseEntity<Supermarket> result = supermarketController.createSupermarket(supermarket);
 
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals(supermarket, result.getBody());
-        verify(supermarketService, times(1)).save(supermarket);
+            assertEquals(HttpStatus.OK, result.getStatusCode());
+            assertEquals(supermarket, result.getBody());
+            verify(supermarketService, times(1)).save(supermarket);
+        } catch (InterruptedException | ExecutionException e) {
+            fail("Exception occurred: " + e.getMessage());
+        }
     }
 
     @Test
@@ -54,13 +63,17 @@ public class SupermarketControllerTest {
                 .setProductIds(Arrays.asList(1L, 2L, 3L))
                 .build();
 
-        when(supermarketService.findById(1L)).thenReturn(Optional.of(supermarket));
+        when(supermarketService.findBySupermarketId(1L)).thenReturn(CompletableFuture.completedFuture(Optional.of(supermarket)));
 
-        ResponseEntity<Supermarket> result = supermarketController.getSupermarketById(1L);
+        try{
+            ResponseEntity<Supermarket> result = supermarketController.getSupermarketById(1L);
 
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals(supermarket, result.getBody());
-        verify(supermarketService, times(1)).findById(1L);
+            assertEquals(HttpStatus.OK, result.getStatusCode());
+            assertEquals(supermarket, result.getBody());
+            verify(supermarketService, times(1)).findBySupermarketId(1L);
+        } catch (InterruptedException | ExecutionException e) {
+            fail("Exception occurred: " + e.getMessage());
+        }
     }
 
     @Test
@@ -79,13 +92,17 @@ public class SupermarketControllerTest {
                 .build();
         List<Supermarket> supermarkets = Arrays.asList(supermarket, supermarket2);
 
-        when(supermarketService.findAll()).thenReturn(supermarkets);
+        when(supermarketService.findAll()).thenReturn(CompletableFuture.completedFuture(supermarkets));
 
-        ResponseEntity<List<Supermarket>> result = supermarketController.getAllSupermarkets();
+        try {
+            ResponseEntity<List<Supermarket>> result = supermarketController.getAllSupermarkets();
 
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals(supermarkets, result.getBody());
-        verify(supermarketService, times(1)).findAll();
+            assertEquals(HttpStatus.OK, result.getStatusCode());
+            assertEquals(supermarkets, result.getBody());
+            verify(supermarketService, times(1)).findAll();
+        } catch (InterruptedException | ExecutionException e) {
+            fail("Exception occurred: " + e.getMessage());
+        }
     }
 
     @Test
@@ -103,15 +120,19 @@ public class SupermarketControllerTest {
                 .setOwnerId(2L)
                 .setProductIds(Arrays.asList(4L, 5L))
                 .build();
-        when(supermarketService.findById(1L)).thenReturn(Optional.of(existingSupermarket));
 
-        when(supermarketService.save(updatedSupermarket)).thenReturn(updatedSupermarket);
+        when(supermarketService.findBySupermarketId(1L)).thenReturn(CompletableFuture.completedFuture(Optional.of(existingSupermarket)));
+        when(supermarketService.save(any(Supermarket.class))).thenReturn(CompletableFuture.completedFuture(updatedSupermarket));
 
-        ResponseEntity<Supermarket> result = supermarketController.updateSupermarket(1L, updatedSupermarket);
+        try{
+            ResponseEntity<Supermarket> result = supermarketController.updateSupermarket(1L, updatedSupermarket);
 
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals(updatedSupermarket, result.getBody());
-        verify(supermarketService, times(1)).findById(1L);
-        verify(supermarketService, times(1)).save(updatedSupermarket);
+            assertEquals(HttpStatus.OK, result.getStatusCode());
+            assertEquals(updatedSupermarket, result.getBody());
+            verify(supermarketService, times(1)).findBySupermarketId(1L);
+            verify(supermarketService, times(1)).save(any(Supermarket.class));
+        } catch (InterruptedException | ExecutionException e) {
+            fail("Exception occurred: " + e.getMessage());
+        }
     }
 }

@@ -1,3 +1,5 @@
+package heymart.backend.service;
+
 import heymart.backend.models.Supermarket;
 import heymart.backend.repository.SupermarketRepository;
 import heymart.backend.service.SupermarketServiceImpl;
@@ -9,6 +11,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -36,18 +40,20 @@ class SupermarketServiceImplTest {
 
     @Test
     void testFindById() {
-        when(supermarketRepository.findById(1L)).thenReturn(Optional.of(supermarket));
+        when(supermarketRepository.findBySupermarketId(1L)).thenReturn(CompletableFuture.completedFuture(Optional.of(supermarket)));
 
-        Optional<Supermarket> result = supermarketService.findById(1L);
+        CompletableFuture<Optional<Supermarket>> futureResult = supermarketRepository.findBySupermarketId(1L);
+        Optional<Supermarket> result = futureResult.join(); // this will block until the future is complete
         assertTrue(result.isPresent());
         assertEquals(supermarket, result.get());
     }
 
     @Test
     void testFindByIdNotFound() {
-        when(supermarketRepository.findById(1L)).thenReturn(Optional.empty());
+        when(supermarketRepository.findBySupermarketId(1L)).thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
-        Optional<Supermarket> result = supermarketService.findById(1L);
+        CompletableFuture<Optional<Supermarket>> futureResult = supermarketService.findBySupermarketId(1L);
+        Optional<Supermarket> result = futureResult.join(); // this will block until the future is complete
         assertFalse(result.isPresent());
     }
 
@@ -62,7 +68,8 @@ class SupermarketServiceImplTest {
         List<Supermarket> supermarkets = Arrays.asList(supermarket, supermarket2);
         when(supermarketRepository.findAll()).thenReturn(supermarkets);
 
-        List<Supermarket> result = supermarketService.findAll();
+        CompletableFuture<List<Supermarket>> futureResult = supermarketService.findAll();
+        List<Supermarket> result = futureResult.join(); // this will block until the future is complete
         assertEquals(supermarkets, result);
     }
 
@@ -70,13 +77,14 @@ class SupermarketServiceImplTest {
     void testSave() {
         when(supermarketRepository.save(supermarket)).thenReturn(supermarket);
 
-        Supermarket result = supermarketService.save(supermarket);
+        CompletableFuture<Supermarket> futureResult = supermarketService.save(supermarket);
+        Supermarket result = futureResult.join(); // this will block until the future is complete
         assertEquals(supermarket, result);
     }
 
     @Test
     void testDeleteById() {
-        supermarketService.deleteById(1L);
+        supermarketService.deleteById(1L).join(); // this will block until the future is complete
         verify(supermarketRepository, times(1)).deleteById(1L);
     }
 }

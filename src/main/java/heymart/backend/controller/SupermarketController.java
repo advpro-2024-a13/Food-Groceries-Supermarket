@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/supermarkets")
@@ -22,32 +24,32 @@ public class SupermarketController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Supermarket>> getAllSupermarkets() {
-        List<Supermarket> supermarkets = supermarketService.findAll();
+    public ResponseEntity<List<Supermarket>> getAllSupermarkets() throws ExecutionException, InterruptedException {
+        List<Supermarket> supermarkets = supermarketService.findAll().get();
         return ResponseEntity.ok(supermarkets);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Supermarket> createSupermarket(@RequestBody Supermarket supermarket) {
-        Supermarket createdSupermarket = supermarketService.save(supermarket);
+    public ResponseEntity<Supermarket> createSupermarket(@RequestBody Supermarket supermarket) throws ExecutionException, InterruptedException {
+        Supermarket createdSupermarket = supermarketService.save(supermarket).get();
         return ResponseEntity.ok(createdSupermarket);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Supermarket> getSupermarketById(@PathVariable Long id) {
-        Optional<Supermarket> supermarket = supermarketService.findById(id);
+    public ResponseEntity<Supermarket> getSupermarketById(@PathVariable Long id) throws ExecutionException, InterruptedException {
+        Optional<Supermarket> supermarket = supermarketService.findBySupermarketId(id).get();
         return supermarket.map(value -> ResponseEntity.ok().body(value)).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}/edit")
-    public ResponseEntity<Supermarket> updateSupermarket(@PathVariable Long id, @RequestBody Supermarket updatedSupermarket) {
-        Optional<Supermarket> existingSupermarketOptional = supermarketService.findById(id);
+    public ResponseEntity<Supermarket> updateSupermarket(@PathVariable Long id, @RequestBody Supermarket updatedSupermarket) throws ExecutionException, InterruptedException {
+        Optional<Supermarket> existingSupermarketOptional = supermarketService.findBySupermarketId(id).get();
         if (existingSupermarketOptional.isPresent()) {
             Supermarket existingSupermarket = existingSupermarketOptional.get();
             existingSupermarket.setName(updatedSupermarket.getName());
             existingSupermarket.setOwnerId(updatedSupermarket.getOwnerId());
             existingSupermarket.setProductIds(updatedSupermarket.getProductIds());
-            Supermarket savedSupermarket = supermarketService.save(existingSupermarket);
+            Supermarket savedSupermarket = supermarketService.save(existingSupermarket).get();
             return ResponseEntity.ok(savedSupermarket);
         } else {
             return ResponseEntity.notFound().build();

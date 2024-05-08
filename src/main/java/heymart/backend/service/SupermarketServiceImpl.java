@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 @Service
 public class SupermarketServiceImpl implements SupermarketService {
@@ -19,22 +21,39 @@ public class SupermarketServiceImpl implements SupermarketService {
     }
 
     @Override
-    public Optional<Supermarket> findById(Long id) {
-        return supermarketRepository.findById(id);
+    public CompletableFuture<Optional<Supermarket>> findBySupermarketId(Long id) {
+        try {
+            return supermarketRepository.findBySupermarketId(id);
+        } catch (Exception e) {
+            throw new CompletionException(e);
+        }
     }
 
     @Override
-    public List<Supermarket> findAll() {
-        return supermarketRepository.findAll();
+    public CompletableFuture<List<Supermarket>> findAll() {
+        try {
+            return CompletableFuture.completedFuture(supermarketRepository.findAll());
+        } catch (Exception e) {
+            throw new CompletionException(e);
+        }
     }
 
     @Override
-    public Supermarket save(Supermarket supermarket) {
-        return supermarketRepository.save(supermarket);
+    public CompletableFuture<Supermarket> save(Supermarket supermarket) {
+        try {
+            return CompletableFuture.completedFuture(supermarketRepository.save(supermarket));
+        } catch (Exception e) {
+            throw new CompletionException(e);
+        }
     }
 
     @Override
-    public void deleteById(Long id) {
-        supermarketRepository.deleteById(id);
+    public CompletableFuture<Void> deleteById(Long id) {
+        try {
+            supermarketRepository.deleteById(id);
+            return CompletableFuture.completedFuture(null);
+        } catch (Exception e) {
+            throw new CompletionException(e);
+        }
     }
 }

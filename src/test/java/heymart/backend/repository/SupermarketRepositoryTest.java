@@ -9,6 +9,8 @@ import org.mockito.MockitoAnnotations;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -32,19 +34,21 @@ public class SupermarketRepositoryTest {
     }
 
     @Test
-    void testFindById() {
-        when(supermarketRepository.findById(1L)).thenReturn(Optional.of(supermarket));
+    void testFindBySupermarketId() {
+        when(supermarketRepository.findBySupermarketId(1L)).thenReturn(CompletableFuture.completedFuture(Optional.of(supermarket)));
 
-        Optional<Supermarket> result = supermarketRepository.findById(1L);
+        CompletableFuture<Optional<Supermarket>> futureResult = supermarketRepository.findBySupermarketId(1L);
+        Optional<Supermarket> result = futureResult.join(); // this will block until the future is complete
         assertTrue(result.isPresent());
         assertEquals(supermarket, result.get());
     }
 
     @Test
-    void testFindByIdNotFound() {
-        when(supermarketRepository.findById(1L)).thenReturn(Optional.empty());
+    void testFindBySupermarketIdNotFound() {
+        when(supermarketRepository.findBySupermarketId(1L)).thenReturn(CompletableFuture.completedFuture(Optional.empty()));
 
-        Optional<Supermarket> result = supermarketRepository.findById(1L);
+        CompletableFuture<Optional<Supermarket>> futureResult = supermarketRepository.findBySupermarketId(1L);
+        Optional<Supermarket> result = futureResult.join(); // this will block until the future is complete
         assertFalse(result.isPresent());
     }
 

@@ -4,10 +4,11 @@ import heymart.backend.models.Supermarket;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public interface SupermarketService {
-    Optional<Supermarket> findById(Long id);
-    List<Supermarket> findAll();
-    Supermarket save(Supermarket supermarket);
-    void deleteById(Long id);
+    CompletableFuture<Optional<Supermarket>> findBySupermarketId(Long id);
+    CompletableFuture<List<Supermarket>> findAll();
+    CompletableFuture<Supermarket> save(Supermarket supermarket);
+    CompletableFuture<Void> deleteById(Long id);
 }
