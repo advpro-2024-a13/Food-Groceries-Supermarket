@@ -3,10 +3,11 @@ package heymart.backend.service;
 import heymart.backend.models.Product;
 import heymart.backend.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -14,33 +15,41 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Async
     @Override
-    public Product createProduct(Product product) {
-        return productRepository.save(product);
+    public CompletableFuture<Product> createProduct(Product product) {
+        return CompletableFuture.completedFuture(productRepository.save(product));
     }
 
+    @Async
     @Override
-    public void deleteProduct(UUID id) {
+    public CompletableFuture<Void> deleteProduct(UUID id) {
         productRepository.deleteById(id);
+        return CompletableFuture.completedFuture(null);
     }
 
+    @Async
     @Override
-    public void editProduct(Product product) {
+    public CompletableFuture<Void> editProduct(Product product) {
         productRepository.save(product);
+        return CompletableFuture.completedFuture(null);
     }
 
+    @Async
     @Override
-    public Product findByProductId(UUID id) {
-        return productRepository.findById(id).orElse(null);
+    public CompletableFuture<Product> findByProductId(UUID id) {
+        return CompletableFuture.completedFuture(productRepository.findById(id).orElse(null));
     }
 
+    @Async
     @Override
-    public List<Product> findBySupermarketOwnerId(Long ownerId) {
-        return productRepository.findBySupermarketOwnerId(ownerId);
+    public CompletableFuture<List<Product>> findBySupermarketOwnerId(Long ownerId) {
+        return CompletableFuture.completedFuture(productRepository.findBySupermarketOwnerId(ownerId));
     }
 
+    @Async
     @Override
-    public List<Product> findAllProducts() {
-        return productRepository.findAll();
+    public CompletableFuture<List<Product>> findAllProducts() {
+        return CompletableFuture.completedFuture(productRepository.findAll());
     }
 }

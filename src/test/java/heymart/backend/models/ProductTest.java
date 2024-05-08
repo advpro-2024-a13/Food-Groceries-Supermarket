@@ -154,13 +154,10 @@ public class ProductTest {
 
     @Test
     public void testProductBuilderToString() {
-        // Given
         Product.ProductBuilder builder = Product.builder();
 
-        // When
         String actualToString = builder.toString();
 
-        // Then
         String expectedToString = "Product.ProductBuilder(" +
                 "productId=null, productName=null, productQuantity=0, " +
                 "productCategory=null, productDescription=null, " +
