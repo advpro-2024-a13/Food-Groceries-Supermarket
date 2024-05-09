@@ -24,7 +24,7 @@ public class SupermarketTest {
 
     @Test
     void testGetId() {
-        assertEquals(1L, supermarket.getId());
+        assertEquals(1L, supermarket.getSupermarketId());
     }
 
     @Test

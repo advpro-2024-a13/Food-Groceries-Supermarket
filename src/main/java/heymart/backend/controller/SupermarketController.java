@@ -3,25 +3,20 @@ package heymart.backend.controller;
 import heymart.backend.models.Supermarket;
 import heymart.backend.service.SupermarketService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/supermarkets")
 public class SupermarketController {
 
-    private final SupermarketService supermarketService;
-
     @Autowired
-    public SupermarketController(SupermarketService supermarketService) {
-        this.supermarketService = supermarketService;
-    }
+    private SupermarketService supermarketService;
+
 
     @GetMapping
     public ResponseEntity<List<Supermarket>> getAllSupermarkets() throws ExecutionException, InterruptedException {

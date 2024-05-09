@@ -1,25 +1,30 @@
 package heymart.backend.models;
 
+import jakarta.persistence.Entity;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Entity
 public class Supermarket {
-    private Long id;
+    @Id
+    private Long supermarketId;
     private String name;
     private Long ownerId;
     private List<Long> productIds;
 
     private Supermarket(Builder builder) {
-        this.id = builder.id;
+        this.supermarketId = builder.id;
         this.name = builder.name;
         this.ownerId = builder.ownerId;
         this.productIds = builder.productIds;
     }
-
     public void addProductId(Long productId) {
         if (productIds == null) {
             productIds = new ArrayList<>();
