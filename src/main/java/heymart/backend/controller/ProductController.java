@@ -25,15 +25,32 @@ public class ProductController {
 
     @DeleteMapping("/delete/{id}")
     public CompletableFuture<ResponseEntity<?>> deleteProduct(@PathVariable UUID id) {
-        return productService.deleteProduct(id)
-                .thenApply(deleted -> ResponseEntity.ok("Product with ID " + id + " deleted."));
+        return productService.findByProductId(id)
+                .thenCompose(existingProduct -> {
+                    if (existingProduct != null) {
+                        return productService.deleteProduct(id)
+                                .thenApply(deleted -> ResponseEntity.ok("Product with ID " + id + " deleted."));
+                    } else {
+                        return CompletableFuture.completedFuture(ResponseEntity.badRequest().body("Product not found with ID " + id));
+                    }
+                });
     }
+
 
     @PutMapping("/edit")
     public CompletableFuture<ResponseEntity<?>> editProduct(@RequestBody Product product) {
-        return productService.editProduct(product)
-                .thenApply(updated -> ResponseEntity.ok("Product edited successfully."));
+        UUID productId = product.getProductId();
+        return productService.findByProductId(productId)
+                .thenCompose(existingProduct -> {
+                    if (existingProduct != null) {
+                        return productService.editProduct(product)
+                                .thenApply(updated -> ResponseEntity.ok("Product edited successfully."));
+                    } else {
+                        return CompletableFuture.completedFuture(ResponseEntity.badRequest().body("Product not found with ID " + productId));
+                    }
+                });
     }
+
 
     @GetMapping("/findById/{id}")
     public CompletableFuture<ResponseEntity<?>> findByProductId(@PathVariable UUID id) {
