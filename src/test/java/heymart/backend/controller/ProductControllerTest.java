@@ -104,8 +104,7 @@ class ProductControllerTest {
 
         ResponseEntity<?> responseEntity = productController.findByProductId(productId).join();
 
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals("Product not found with ID " + productId, responseEntity.getBody());
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         verify(productService, times(1)).findByProductId(productId);
     }
 
