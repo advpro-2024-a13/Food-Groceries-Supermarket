@@ -1,91 +1,89 @@
 package heymart.backend.repository;
 
+import heymart.backend.controller.ProductController;
 import heymart.backend.models.Product;
+import heymart.backend.service.ProductService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.ArrayList;
+import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-@ExtendWith(MockitoExtension.class)
-class ProductRepositoryTest {
-
-    @Mock
-    private ProductRepository productRepository;
+class ProductControllerTest {
 
     @Test
-    void testSaveProduct() {
-        Product product = createProduct();
-        when(productRepository.save(product)).thenReturn(product);
-
-        Product savedProduct = productRepository.save(product);
-
-        assertNotNull(savedProduct.getProductId());
-        assertEquals(product.getProductName(), savedProduct.getProductName());
-    }
-
-    @Test
-    void testFindById() {
-        Product product = createProduct();
-        when(productRepository.findById(product.getProductId())).thenReturn(Optional.of(product));
-
-        Optional<Product> foundProductOptional = productRepository.findById(product.getProductId());
-
-        assertTrue(foundProductOptional.isPresent());
-        Product foundProduct = foundProductOptional.get();
-        assertEquals(product.getProductName(), foundProduct.getProductName());
-    }
-
-    @Test
-    void testFindByOwnerId() {
-        Long ownerId = 1L;
-        List<Product> products = new ArrayList<>();
-        products.add(createProduct());
-        products.add(createProduct());
-        when(productRepository.findBySupermarketOwnerId(ownerId)).thenReturn(products);
-
-        List<Product> foundProducts = productRepository.findBySupermarketOwnerId(ownerId);
-
-        assertEquals(2, foundProducts.size());
+    void testCreateProduct() {
+        Product product = new Product();
+        ProductService productService = Mockito.mock(ProductService.class);
+        when(productService.createProduct(any(Product.class))).thenReturn(CompletableFuture.completedFuture(product));
+        ProductController controller = new ProductController(productService);
+        ResponseEntity<Product> response = controller.createProduct(new Product()).join();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(product, response.getBody());
     }
 
     @Test
     void testDeleteProduct() {
-        Product product = createProduct();
-
-        doNothing().when(productRepository).delete(product);
-
-        assertDoesNotThrow(() -> productRepository.delete(product));
+        UUID id = UUID.randomUUID();
+        ProductService productService = Mockito.mock(ProductService.class);
+        when(productService.findByProductId(id)).thenReturn(CompletableFuture.completedFuture(new Product()));
+        when(productService.deleteProduct(id)).thenReturn(CompletableFuture.completedFuture(null));
+        ProductController controller = new ProductController(productService);
+        ResponseEntity<String> response = controller.deleteProduct(id).join();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody().contains("deleted"));
     }
 
     @Test
     void testEditProduct() {
-        Product product = createProduct();
-        when(productRepository.save(product)).thenReturn(product);
-
-        Product editedProduct = productRepository.save(product);
-
-        assertNotNull(editedProduct.getProductId());
-        assertEquals(product.getProductName(), editedProduct.getProductName());
+        Product product = new Product();
+        product.setProductId(UUID.randomUUID());
+        ProductService productService = Mockito.mock(ProductService.class);
+        when(productService.findByProductId(product.getProductId())).thenReturn(CompletableFuture.completedFuture(product));
+        when(productService.editProduct(any(Product.class))).thenReturn(CompletableFuture.completedFuture(null));
+        ProductController controller = new ProductController(productService);
+        ResponseEntity<String> response = controller.editProduct(product).join();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody().contains("edited"));
     }
 
-    private Product createProduct() {
-        return Product.builder()
-                .productId(UUID.randomUUID())
-                .productName("Test Product")
-                .productQuantity(10)
-                .productCategory("Test Category")
-                .productDescription("Test Description")
-                .productImagePath("/test/image/path")
-                .productPrice(100L)
-                .supermarketOwnerId(1L)
-                .build();
+    @Test
+    void testFindByProductId() {
+        UUID id = UUID.randomUUID();
+        ProductService productService = Mockito.mock(ProductService.class);
+        when(productService.findByProductId(id)).thenReturn(CompletableFuture.completedFuture(null)); // Assuming product not found
+        ProductController controller = new ProductController(productService);
+        ResponseEntity<Product> response = controller.findByProductId(id).join();
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void testFindBySupermarketOwnerId() {
+        Long ownerId = 123L;
+        List<Product> products = Collections.emptyList();
+        ProductService productService = Mockito.mock(ProductService.class);
+        when(productService.findBySupermarketOwnerId(ownerId)).thenReturn(CompletableFuture.completedFuture(products));
+        ProductController controller = new ProductController(productService);
+        ResponseEntity<List<Product>> response = controller.findBySupermarketOwnerId(ownerId).join();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(products, response.getBody());
+    }
+
+    @Test
+    void testFindAllProducts() {
+        List<Product> products = Collections.emptyList();
+        ProductService productService = Mockito.mock(ProductService.class);
+        when(productService.findAllProducts()).thenReturn(CompletableFuture.completedFuture(products));
+        ProductController controller = new ProductController(productService);
+        ResponseEntity<List<Product>> response = controller.findAllProducts().join();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(products, response.getBody());
     }
 }
