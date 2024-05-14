@@ -1,12 +1,10 @@
 package heymart.backend.repository;
 
 import heymart.backend.models.Product;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ProductRepositoryTest {
+class ProductRepositoryTest {
 
     @Mock
     private ProductRepository productRepository;
 
     @Test
-    public void testSaveProduct() {
+    void testSaveProduct() {
         Product product = createProduct();
         when(productRepository.save(product)).thenReturn(product);
 
@@ -34,7 +32,7 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    public void testFindById() {
+    void testFindById() {
         Product product = createProduct();
         when(productRepository.findById(product.getProductId())).thenReturn(Optional.of(product));
 
@@ -46,7 +44,7 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    public void testFindByOwnerId() {
+    void testFindByOwnerId() {
         Long ownerId = 1L;
         List<Product> products = new ArrayList<>();
         products.add(createProduct());
@@ -59,7 +57,7 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    public void testDeleteProduct() {
+    void testDeleteProduct() {
         Product product = createProduct();
 
         doNothing().when(productRepository).delete(product);
@@ -68,7 +66,7 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    public void testEditProduct() {
+    void testEditProduct() {
         Product product = createProduct();
         when(productRepository.save(product)).thenReturn(product);
 

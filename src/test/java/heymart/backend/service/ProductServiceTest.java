@@ -86,7 +86,7 @@ class ProductServiceTest {
     }
 
     @Test
-    public void testFindBySupermarketOwnerId() throws ExecutionException, InterruptedException {
+    void testFindBySupermarketOwnerId() throws ExecutionException, InterruptedException {
         Long ownerId = 123L;
         List<Product> productList = new ArrayList<>();
 
