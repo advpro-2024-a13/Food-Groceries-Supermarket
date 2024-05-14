@@ -48,7 +48,6 @@ class ProductServiceTest {
     void testDelete() throws ExecutionException, InterruptedException {
         UUID id = UUID.randomUUID();
 
-        CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
         productService.deleteProduct(id).get();
 
         verify(productRepository, times(1)).deleteById(id);
@@ -62,7 +61,6 @@ class ProductServiceTest {
                 .productQuantity(10)
                 .build();
 
-        CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
         productService.editProduct(product).get();
 
         verify(productRepository, times(1)).save(product);
