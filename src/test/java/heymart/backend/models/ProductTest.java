@@ -6,8 +6,9 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class ProductTest {
+class ProductTest {
 
     Product product;
 
@@ -112,14 +113,14 @@ public class ProductTest {
     @Test
     void testNoArgsConstructor() {
         Product emptyProduct = new Product();
-        assertEquals(null, emptyProduct.getProductId());
-        assertEquals(null, emptyProduct.getProductName());
+        assertNull(emptyProduct.getProductId());
+        assertNull(emptyProduct.getProductName());
         assertEquals(0, emptyProduct.getProductQuantity());
-        assertEquals(null, emptyProduct.getProductCategory());
-        assertEquals(null, emptyProduct.getProductDescription());
-        assertEquals(null, emptyProduct.getProductImagePath());
-        assertEquals(null, emptyProduct.getProductPrice());
-        assertEquals(null, emptyProduct.getSupermarketOwnerId());
+        assertNull(emptyProduct.getProductCategory());
+        assertNull(emptyProduct.getProductDescription());
+        assertNull(emptyProduct.getProductImagePath());
+        assertNull(emptyProduct.getProductPrice());
+        assertNull(emptyProduct.getSupermarketOwnerId());
     }
 
     @Test
@@ -153,7 +154,7 @@ public class ProductTest {
     }
 
     @Test
-    public void testProductBuilderToString() {
+    void testProductBuilderToString() {
         Product.ProductBuilder builder = Product.builder();
 
         String actualToString = builder.toString();

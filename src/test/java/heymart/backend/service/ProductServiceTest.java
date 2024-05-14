@@ -10,7 +10,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -48,7 +47,6 @@ class ProductServiceTest {
     void testDelete() throws ExecutionException, InterruptedException {
         UUID id = UUID.randomUUID();
 
-        CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
         productService.deleteProduct(id).get();
 
         verify(productRepository, times(1)).deleteById(id);
@@ -62,7 +60,6 @@ class ProductServiceTest {
                 .productQuantity(10)
                 .build();
 
-        CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
         productService.editProduct(product).get();
 
         verify(productRepository, times(1)).save(product);
@@ -86,7 +83,7 @@ class ProductServiceTest {
     }
 
     @Test
-    public void testFindBySupermarketOwnerId() throws ExecutionException, InterruptedException {
+    void testFindBySupermarketOwnerId() throws ExecutionException, InterruptedException {
         Long ownerId = 123L;
         List<Product> productList = new ArrayList<>();
 

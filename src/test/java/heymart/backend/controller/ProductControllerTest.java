@@ -44,35 +44,36 @@ class ProductControllerTest {
     }
 
     @Test
-    void testDeleteProduct() {
+    void testDeleteProductNotFound() {
         UUID productId = UUID.randomUUID();
 
-        CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
-        when(productService.deleteProduct(productId)).thenReturn(future);
+        CompletableFuture<Product> future = CompletableFuture.completedFuture(null);
+        when(productService.findByProductId(productId)).thenReturn(future);
 
         ResponseEntity<?> responseEntity = productController.deleteProduct(productId).join();
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("Product with ID " + productId + " deleted.", responseEntity.getBody());
-        verify(productService, times(1)).deleteProduct(productId);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Product not found with ID " + productId, responseEntity.getBody());
+        verify(productService, never()).deleteProduct(productId);
     }
 
     @Test
-    void testEditProduct() {
+    void testEditProductNotFound() {
+        UUID productId = UUID.randomUUID();
         Product product = Product.builder()
-                .productId(UUID.randomUUID())
+                .productId(productId)
                 .productName("Updated Product")
                 .productQuantity(20)
                 .build();
 
-        CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
-        when(productService.editProduct(product)).thenReturn(future);
+        CompletableFuture<Product> future = CompletableFuture.completedFuture(null);
+        when(productService.findByProductId(productId)).thenReturn(future);
 
         ResponseEntity<?> responseEntity = productController.editProduct(product).join();
 
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals("Product edited successfully.", responseEntity.getBody());
-        verify(productService, times(1)).editProduct(product);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Product not found with ID " + productId, responseEntity.getBody());
+        verify(productService, never()).editProduct(product);
     }
 
     @Test
@@ -103,8 +104,7 @@ class ProductControllerTest {
 
         ResponseEntity<?> responseEntity = productController.findByProductId(productId).join();
 
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertEquals("Product not found with ID " + productId, responseEntity.getBody());
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         verify(productService, times(1)).findByProductId(productId);
     }
 
