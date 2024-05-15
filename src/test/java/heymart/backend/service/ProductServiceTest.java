@@ -28,7 +28,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void testCreate() throws ExecutionException, InterruptedException {
+    void testCreate() {
         Product product = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Test Product")
@@ -37,30 +37,30 @@ class ProductServiceTest {
 
         when(productRepository.save(product)).thenReturn(product);
 
-        Product createdProduct = productService.createProduct(product).get();
+        Product createdProduct = productService.createProduct(product);
 
         assertEquals(product, createdProduct);
         verify(productRepository, times(1)).save(product);
     }
 
     @Test
-    void testDelete() throws ExecutionException, InterruptedException {
+    void testDelete() {
         UUID id = UUID.randomUUID();
 
-        productService.deleteProduct(id).get();
+        productService.deleteProduct(id);
 
         verify(productRepository, times(1)).deleteById(id);
     }
 
     @Test
-    void testEdit() throws ExecutionException, InterruptedException {
+    void testEdit() {
         Product product = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Test Product")
                 .productQuantity(10)
                 .build();
 
-        productService.editProduct(product).get();
+        productService.editProduct(product);
 
         verify(productRepository, times(1)).save(product);
     }
