@@ -19,24 +19,19 @@ public class ProductServiceImpl implements ProductService {
         this.productRepository = productRepository;
     }
 
-    @Async
     @Override
-    public CompletableFuture<Product> createProduct(Product product) {
-        return CompletableFuture.completedFuture(productRepository.save(product));
+    public Product createProduct(Product product) {
+        return productRepository.save(product);
     }
 
-    @Async
     @Override
-    public CompletableFuture<Void> deleteProduct(UUID id) {
+    public void deleteProduct(UUID id) {
         productRepository.deleteById(id);
-        return CompletableFuture.completedFuture(null);
     }
 
-    @Async
     @Override
-    public CompletableFuture<Void> editProduct(Product product) {
+    public void editProduct(Product product) {
         productRepository.save(product);
-        return CompletableFuture.completedFuture(null);
     }
 
     @Async
