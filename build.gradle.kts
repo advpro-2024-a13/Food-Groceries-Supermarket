@@ -1,10 +1,18 @@
-
 plugins {
 	java
 	jacoco
 	id("org.springframework.boot") version "3.2.2"
 	id("io.spring.dependency-management") version "1.1.4"
+	id("com.google.cloud.tools.jib") version "3.2.0"
 	id("org.sonarqube") version "4.4.1.3373"
+}
+
+sonar {
+	properties {
+		property("sonar.projectKey", "advpro-2024-a13_Food-Groceries-Supermarket-Product")
+		property("sonar.organization", "advpro-2024-a13")
+		property("sonar.host.url", "https://sonarcloud.io")
+	}
 }
 
 group = "id.ac.ui.cs.advprog"
@@ -35,6 +43,9 @@ val junitJupiterVersion = "5.9.1"
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.cloud:spring-cloud-gcp-starter-sql-postgresql:1.2.8.RELEASE")
+	implementation("org.springframework.cloud:spring-cloud-gcp-starter:1.1.1.RELEASE")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -50,19 +61,6 @@ dependencies {
 tasks.register<Test>("unitTest") {
 	description = "Runs unit tests."
 	group = "verification"
-
-	filter {
-		excludeTestsMatching("*FunctionalTest")
-	}
-}
-
-tasks.register<Test>("functionalTest") {
-	description = "Runs functional tests."
-	group = "verification"
-
-	filter {
-		includeTestsMatching("*FunctionalTest")
-	}
 }
 
 tasks.withType<Test>().configureEach {
@@ -70,12 +68,10 @@ tasks.withType<Test>().configureEach {
 }
 
 tasks.test {
-	filter {
-		excludeTestsMatching("*FunctionalTest")
-	}
-
+	useJUnitPlatform()
 	finalizedBy(tasks.jacocoTestReport)
 }
+
 
 tasks.jacocoTestReport {
 	dependsOn(tasks.test)

@@ -8,15 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-
 import java.util.UUID;
-
+import java.util.concurrent.ExecutionException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-class ProductServiceImplTest {
+class ProductServiceTest {
 
     @Mock
     private ProductRepository productRepository;
@@ -30,111 +28,114 @@ class ProductServiceImplTest {
     }
 
     @Test
-    void testCreate() {
-        Product product = new Product.Builder()
+    void testCreate() throws ExecutionException, InterruptedException {
+        Product product = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Test Product")
                 .productQuantity(10)
                 .build();
-        when(productRepository.createProduct(product)).thenReturn(product);
 
-        Product createdProduct = productService.createProduct(product);
+        when(productRepository.save(product)).thenReturn(product);
+
+        Product createdProduct = productService.createProduct(product).get();
 
         assertEquals(product, createdProduct);
-        verify(productRepository).createProduct(product);
+        verify(productRepository, times(1)).save(product);
     }
 
     @Test
-    void testDelete() {
+    void testDelete() throws ExecutionException, InterruptedException {
         UUID id = UUID.randomUUID();
-        productService.deleteProduct(id);
 
-        verify(productRepository).deleteProduct(id);
+        productService.deleteProduct(id).get();
+
+        verify(productRepository, times(1)).deleteById(id);
     }
 
     @Test
-    void testEdit() {
-        Product product = new Product.Builder()
+    void testEdit() throws ExecutionException, InterruptedException {
+        Product product = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Test Product")
                 .productQuantity(10)
                 .build();
-        productService.editProduct(product);
 
-        verify(productRepository).editProduct(product);
+        productService.editProduct(product).get();
+
+        verify(productRepository, times(1)).save(product);
     }
 
     @Test
-    void testFindById() {
+    void testFindById() throws ExecutionException, InterruptedException {
         UUID id = UUID.randomUUID();
-        Product product = new Product.Builder()
+        Product product = Product.builder()
                 .productId(id)
                 .productName("Test Product")
                 .productQuantity(10)
                 .build();
-        when(productRepository.findByProductId(id)).thenReturn(product);
 
-        Product foundProduct = productService.findByProductId(id);
+        when(productRepository.findById(id)).thenReturn(java.util.Optional.of(product));
+
+        Product foundProduct = productService.findByProductId(id).get();
 
         assertEquals(product, foundProduct);
-        verify(productRepository).findByProductId(id);
+        verify(productRepository, times(1)).findById(id);
     }
 
     @Test
-    public void testFindBySupermarketOwnerId() {
+    void testFindBySupermarketOwnerId() throws ExecutionException, InterruptedException {
+        Long ownerId = 123L;
         List<Product> productList = new ArrayList<>();
 
-        Product product1 = new Product.Builder()
+        Product product1 = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Kangkung")
                 .productQuantity(1)
-                .supermarketOwnerId(123L)
+                .supermarketOwnerId(ownerId)
                 .build();
         productList.add(product1);
 
-        Product product2 = new Product.Builder()
+        Product product2 = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Bayam")
                 .productQuantity(2)
-                .supermarketOwnerId(123L)
+                .supermarketOwnerId(ownerId)
                 .build();
         productList.add(product2);
 
-        when(productRepository.findBySupermarketOwnerId(123L)).thenReturn(productList);
+        when(productRepository.findBySupermarketOwnerId(ownerId)).thenReturn(productList);
 
-        List<Product> result = productService.findBySupermarketOwnerId(123L);
+        List<Product> result = productService.findBySupermarketOwnerId(ownerId).get();
 
         assertEquals(productList.size(), result.size());
         for (int i = 0; i < productList.size(); i++) {
             assertEquals(productList.get(i), result.get(i));
         }
 
-        verify(productRepository, times(1)).findBySupermarketOwnerId(123L);
+        verify(productRepository, times(1)).findBySupermarketOwnerId(ownerId);
     }
 
-
     @Test
-    void testFindAllProduct() {
+    void testFindAllProduct() throws ExecutionException, InterruptedException {
         List<Product> productList = new ArrayList<>();
 
-        Product product1 = new Product.Builder()
+        Product product1 = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Kangkung")
                 .productQuantity(1)
                 .build();
         productList.add(product1);
 
-        Product product2 = new Product.Builder()
+        Product product2 = Product.builder()
                 .productId(UUID.randomUUID())
                 .productName("Bayam")
                 .productQuantity(2)
                 .build();
         productList.add(product2);
 
-        Iterator<Product> iterator = productList.iterator();
-        when(productRepository.findAll()).thenReturn(iterator);
+        when(productRepository.findAll()).thenReturn(productList);
 
-        List<Product> result = productService.findAllProducts();
+        List<Product> result = productService.findAllProducts().get();
 
         assertEquals(productList.size(), result.size());
         for (int i = 0; i < productList.size(); i++) {
