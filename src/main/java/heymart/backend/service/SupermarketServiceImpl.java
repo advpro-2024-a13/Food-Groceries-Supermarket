@@ -3,57 +3,54 @@ package heymart.backend.service;
 import heymart.backend.models.Supermarket;
 import heymart.backend.repository.SupermarketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
 @Service
 public class SupermarketServiceImpl implements SupermarketService {
-    @Autowired
     private final SupermarketRepository supermarketRepository;
 
+    @Autowired
     public SupermarketServiceImpl(SupermarketRepository supermarketRepository) {
         this.supermarketRepository = supermarketRepository;
     }
 
+    @Async
     @Override
-    public CompletableFuture<Optional<Supermarket>> findBySupermarketId(Long id) {
-        try {
-            return supermarketRepository.findBySupermarketId(id);
-        } catch (Exception e) {
-            throw new CompletionException(e);
-        }
+    public CompletableFuture<Supermarket> findById(UUID id) {
+       return CompletableFuture.completedFuture(supermarketRepository.findById(id).orElse(null));
     }
 
+    @Async
     @Override
     public CompletableFuture<List<Supermarket>> findAll() {
-        try {
-            return CompletableFuture.completedFuture(supermarketRepository.findAll());
-        } catch (Exception e) {
-            throw new CompletionException(e);
-        }
+       return CompletableFuture.completedFuture(supermarketRepository.findAll());
     }
 
+    @Async
     @Override
     public CompletableFuture<Supermarket> save(Supermarket supermarket) {
-        try {
-            return CompletableFuture.completedFuture(supermarketRepository.save(supermarket));
-        } catch (Exception e) {
-            throw new CompletionException(e);
-        }
+        return CompletableFuture.completedFuture(supermarketRepository.save(supermarket));
     }
 
+    @Async
     @Override
-    public CompletableFuture<Void> deleteById(Long id) {
-        try {
-            supermarketRepository.deleteById(id);
-            return CompletableFuture.completedFuture(null);
-        } catch (Exception e) {
-            throw new CompletionException(e);
-        }
+    public CompletableFuture<Void> deleteById(UUID id) {
+        supermarketRepository.deleteById(id);
+        return CompletableFuture.completedFuture(null);
+    }
+
+    @Async
+    @Override
+    public CompletableFuture<Void> editSupermarket(Supermarket editedSupermarket) {
+        supermarketRepository.save(editedSupermarket);
+        return CompletableFuture.completedFuture(null);
     }
 }

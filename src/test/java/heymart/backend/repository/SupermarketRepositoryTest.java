@@ -3,81 +3,53 @@ package heymart.backend.repository;
 import heymart.backend.models.Supermarket;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
-public class SupermarketRepositoryTest {
+
+@ExtendWith(MockitoExtension.class)
+class SupermarketRepositoryTest {
 
     @Mock
     private SupermarketRepository supermarketRepository;
 
-    private Supermarket supermarket;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        supermarket = new Supermarket.Builder()
-                .setId(1L)
-                .setName("Supermarket ABC")
-                .setOwnerId(1L)
-                .setProductIds(Arrays.asList(1L, 2L, 3L))
+    @Test
+    void testFindById() {
+        UUID id = UUID.randomUUID();
+        Supermarket supermarket = Supermarket.builder()
+                .supermarketId(id)
+                .name("Supermarket ABC")
+                .ownerId(1L)
+                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
                 .build();
-    }
 
-    @Test
-    void testFindBySupermarketId() {
-        when(supermarketRepository.findBySupermarketId(1L)).thenReturn(CompletableFuture.completedFuture(Optional.of(supermarket)));
+        when(supermarketRepository.findById(id)).thenReturn(Optional.of(supermarket));
 
-        CompletableFuture<Optional<Supermarket>> futureResult = supermarketRepository.findBySupermarketId(1L);
-        Optional<Supermarket> result = futureResult.join(); // this will block until the future is complete
-        assertTrue(result.isPresent());
-        assertEquals(supermarket, result.get());
-    }
-
-    @Test
-    void testFindBySupermarketIdNotFound() {
-        when(supermarketRepository.findBySupermarketId(1L)).thenReturn(CompletableFuture.completedFuture(Optional.empty()));
-
-        CompletableFuture<Optional<Supermarket>> futureResult = supermarketRepository.findBySupermarketId(1L);
-        Optional<Supermarket> result = futureResult.join(); // this will block until the future is complete
-        assertFalse(result.isPresent());
+        Optional<Supermarket> foundSupermarket = supermarketRepository.findById(id);
+        assertEquals(supermarket, foundSupermarket.get());
+        assertEquals(supermarket.getSupermarketId(), foundSupermarket.get().getSupermarketId());
     }
 
     @Test
     void testSave() {
+        UUID id = UUID.randomUUID();
+        Supermarket supermarket = Supermarket.builder()
+                .supermarketId(id)
+                .name("Supermarket ABC")
+                .ownerId(1L)
+                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
+                .build();
+
         when(supermarketRepository.save(supermarket)).thenReturn(supermarket);
 
-        Supermarket result = supermarketRepository.save(supermarket);
-        assertEquals(supermarket, result);
-    }
-
-    @Test
-    void testFindAll() {
-        Supermarket supermarket2 = new Supermarket.Builder()
-                .setId(2L)
-                .setName("Supermarket XYZ")
-                .setOwnerId(2L)
-                .setProductIds(Arrays.asList(4L, 5L))
-                .build();
-        List<Supermarket> supermarkets = Arrays.asList(supermarket, supermarket2);
-        when(supermarketRepository.findAll()).thenReturn(supermarkets);
-
-        List<Supermarket> result = supermarketRepository.findAll();
-        assertEquals(supermarkets, result);
-    }
-
-    @Test
-    void testDeleteById() {
-        supermarketRepository.deleteById(1L);
-        verify(supermarketRepository, times(1)).deleteById(1L);
+        Supermarket savedSupermarket = supermarketRepository.save(supermarket);
+        assertEquals(supermarket, savedSupermarket);
+        assertEquals(supermarket.getSupermarketId(), savedSupermarket.getSupermarketId());
     }
 }

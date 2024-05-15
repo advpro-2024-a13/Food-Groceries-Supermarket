@@ -5,14 +5,13 @@ import heymart.backend.repository.SupermarketRepository;
 import heymart.backend.service.SupermarketServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -22,69 +21,83 @@ class SupermarketServiceImplTest {
     @Mock
     private SupermarketRepository supermarketRepository;
 
+    @InjectMocks
     private SupermarketServiceImpl supermarketService;
 
-    private Supermarket supermarket;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        supermarketService = new SupermarketServiceImpl(supermarketRepository);
-        supermarket = new Supermarket.Builder()
-                .setId(1L)
-                .setName("Supermarket ABC")
-                .setOwnerId(1L)
-                .setProductIds(Arrays.asList(1L, 2L, 3L))
+    }
+
+    @Test
+    void testFindById() throws ExecutionException, InterruptedException{
+        UUID id = UUID.randomUUID();
+        Supermarket supermarket = Supermarket.builder()
+                .supermarketId(id)
+                .name("Supermarket ABC")
+                .ownerId(1L)
+                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
                 .build();
+
+        when(supermarketRepository.findById(id)).thenReturn(Optional.of(supermarket));
+
+        Supermarket result = supermarketService.findById(id).get();
+
+        assertEquals(supermarket, result);
+        verify(supermarketRepository, times(1)).findById(id);
     }
 
-    @Test
-    void testFindById() {
-        when(supermarketRepository.findBySupermarketId(1L)).thenReturn(CompletableFuture.completedFuture(Optional.of(supermarket)));
-
-        CompletableFuture<Optional<Supermarket>> futureResult = supermarketRepository.findBySupermarketId(1L);
-        Optional<Supermarket> result = futureResult.join(); // this will block until the future is complete
-        assertTrue(result.isPresent());
-        assertEquals(supermarket, result.get());
-    }
-
-    @Test
-    void testFindByIdNotFound() {
-        when(supermarketRepository.findBySupermarketId(1L)).thenReturn(CompletableFuture.completedFuture(Optional.empty()));
-
-        CompletableFuture<Optional<Supermarket>> futureResult = supermarketService.findBySupermarketId(1L);
-        Optional<Supermarket> result = futureResult.join(); // this will block until the future is complete
-        assertFalse(result.isPresent());
-    }
 
     @Test
     void testFindAll() {
-        Supermarket supermarket2 = new Supermarket.Builder()
-                .setId(2L)
-                .setName("Supermarket XYZ")
-                .setOwnerId(2L)
-                .setProductIds(Arrays.asList(4L, 5L))
+        List<Supermarket> supermarketList = new ArrayList<>();
+        Supermarket supermarket = Supermarket.builder()
+                .supermarketId(UUID.randomUUID())
+                .name("Supermarket ABC")
+                .ownerId(1L)
+                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
                 .build();
-        List<Supermarket> supermarkets = Arrays.asList(supermarket, supermarket2);
-        when(supermarketRepository.findAll()).thenReturn(supermarkets);
+        supermarketList.add(supermarket);
+        Supermarket supermarket2 = Supermarket.builder()
+                .supermarketId(UUID.randomUUID())
+                .name("Supermarket XYZ")
+                .ownerId(2L)
+                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
+                .build();
+        supermarketList.add(supermarket2);
+
+        when(supermarketRepository.findAll()).thenReturn(supermarketList);
 
         CompletableFuture<List<Supermarket>> futureResult = supermarketService.findAll();
         List<Supermarket> result = futureResult.join(); // this will block until the future is complete
-        assertEquals(supermarkets, result);
+        assertEquals(supermarketList, result);
+        verify(supermarketRepository, times(1)).findAll();
     }
 
     @Test
-    void testSave() {
+    void testSave(){
+        Supermarket supermarket = Supermarket.builder()
+                .name("Test Supermarket")
+                .ownerId(1L)
+                .productIds(new ArrayList<>(List.of(UUID.randomUUID())))
+                .build();
+
         when(supermarketRepository.save(supermarket)).thenReturn(supermarket);
 
         CompletableFuture<Supermarket> futureResult = supermarketService.save(supermarket);
         Supermarket result = futureResult.join(); // this will block until the future is complete
         assertEquals(supermarket, result);
+        verify(supermarketRepository, times(1)).save(supermarket);
     }
 
     @Test
-    void testDeleteById() {
-        supermarketService.deleteById(1L).join(); // this will block until the future is complete
-        verify(supermarketRepository, times(1)).deleteById(1L);
+    void testDeleteById() throws ExecutionException, InterruptedException{
+        UUID id = UUID.randomUUID();
+        doNothing().when(supermarketRepository).deleteById(id);
+
+        CompletableFuture<Void> futureResult = supermarketService.deleteById(id);
+        futureResult.get(); // this will block until the future is complete
+        verify(supermarketRepository, times(1)).deleteById(id);
     }
 }

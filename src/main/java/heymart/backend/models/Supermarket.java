@@ -1,71 +1,39 @@
 package heymart.backend.models;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import jakarta.persistence.GenerationType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
+
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Supermarket {
     @Id
-    private Long supermarketId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID supermarketId;
     private String name;
     private Long ownerId;
-    private List<Long> productIds;
+    @ElementCollection
+//    @CollectionTable(name = "supermarket_product_ids", joinColumns = @JoinColumn(name = "supermarket_id"))
+    @Column(columnDefinition = "UUID[]")
+    private List<UUID> productIds = new ArrayList<>();
 
-    private Supermarket(Builder builder) {
-        this.supermarketId = builder.id;
-        this.name = builder.name;
-        this.ownerId = builder.ownerId;
-        this.productIds = builder.productIds;
-    }
-    public void addProductId(Long productId) {
-        if (productIds == null) {
-            productIds = new ArrayList<>();
-        }
-        productIds.add(productId);
-    }
-
-    public void removeProductId(Long productId) {
-        if (productIds != null) {
-            productIds.remove(productId);
+    public void addProductId(UUID productId) {
+        if (!productIds.contains(productId)) {
+            productIds.add(productId);
         }
     }
 
-    public static class Builder {
-        private Long id;
-        private String name;
-        private Long ownerId;
-        private List<Long> productIds;
-
-        public Builder setId(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder setName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder setOwnerId(Long ownerId) {
-            this.ownerId = ownerId;
-            return this;
-        }
-
-        public Builder setProductIds(List<Long> productIds) {
-            this.productIds = productIds;
-            return this;
-        }
-
-        public Supermarket build() {
-            return new Supermarket(this);
-        }
+    public void removeProductId(UUID productId) {
+        productIds.remove(productId);
     }
 }

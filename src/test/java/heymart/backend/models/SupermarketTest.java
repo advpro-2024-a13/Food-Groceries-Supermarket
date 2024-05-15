@@ -6,25 +6,28 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SupermarketTest {
-    private Supermarket supermarket;
+    Supermarket supermarket;
     private Long managerId;
-    private List<Long> productIds = new ArrayList<>();
+    private List<UUID> productIds = new ArrayList<>();
     @BeforeEach
     void setUp() {
         managerId = 1L;
-        supermarket = new Supermarket.Builder()
-                        .setId(1L)
-                        .setName("Supermarket ABC")
-                        .setOwnerId(managerId)
-                        .setProductIds(productIds)
+        productIds = new ArrayList<>(List.of(UUID.fromString("d144792b-40f5-42a8-b939-9df19231dba5")));
+        this.supermarket = Supermarket.builder()
+                        .supermarketId(UUID.fromString("7e1924ce-323d-4a82-a40d-d16a1ae2b21f"))
+                        .name("Supermarket ABC")
+                        .ownerId(managerId)
+                        .productIds(productIds)
                         .build();
     }
 
     @Test
     void testGetId() {
-        assertEquals(1L, supermarket.getSupermarketId());
+        UUID id = UUID.fromString("7e1924ce-323d-4a82-a40d-d16a1ae2b21f");
+        assertEquals(id, supermarket.getSupermarketId());
     }
 
     @Test
@@ -50,15 +53,16 @@ public class SupermarketTest {
 
     @Test
     void testAddProductId() {
-        Long newProductId = 3L;
+        UUID newProductId = UUID.fromString("5c893611-f22d-4666-9d6f-06005cfdc31f");
         supermarket.addProductId(newProductId);
         assertTrue(supermarket.getProductIds().contains(newProductId));
     }
 
     @Test
     void testRemoveProductId() {
-        supermarket.addProductId(3L);
-        supermarket.removeProductId(3L);
-        assertFalse(supermarket.getProductIds().contains(3L));
+        UUID id = UUID.fromString("5c893611-f22d-4666-9d6f-06005cfdc31f");
+        supermarket.addProductId(id);
+        supermarket.removeProductId(id);
+        assertFalse(supermarket.getProductIds().contains(id));
     }
 }
