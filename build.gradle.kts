@@ -1,4 +1,3 @@
-
 plugins {
 	java
 	jacoco
@@ -82,4 +81,3 @@ tasks.jacocoTestReport {
 		xml.required = true
 	}
 }
-
