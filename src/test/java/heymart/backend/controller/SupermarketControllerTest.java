@@ -3,20 +3,16 @@ package heymart.backend.controller;
 import heymart.backend.models.Supermarket;
 import heymart.backend.service.SupermarketServiceImpl;
 
-import org.apache.coyote.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -99,5 +95,52 @@ public class SupermarketControllerTest {
         verify(supermarketService, times(1)).findAll();
     }
 
+    @Test
+    public void testEditSupermarket() {
+        UUID id = UUID.randomUUID();
+        Supermarket supermarket = Supermarket.builder()
+                .supermarketId(id)
+                .name("Supermarket ABC")
+                .ownerId(1L)
+                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
+                .build();
 
+        Supermarket editedSupermarket = Supermarket.builder()
+                .supermarketId(id)
+                .name("Supermarket XYZ")
+                .ownerId(2L)
+                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID())))
+                .build();
+
+        CompletableFuture<Supermarket> future = CompletableFuture.completedFuture(supermarket);
+        when(supermarketService.findById(id)).thenReturn(future);
+        when(supermarketService.save(editedSupermarket)).thenReturn(CompletableFuture.completedFuture(editedSupermarket));
+
+        ResponseEntity<?> responseEntity = supermarketController.editSupermarket(id, editedSupermarket).join();
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        verify(supermarketService, times(1)).findById(id);
+        verify(supermarketService, times(1)).save(editedSupermarket);
+    }
+
+    @Test
+    public void testDeleteSupermarket() {
+        UUID id = UUID.randomUUID();
+        Supermarket supermarket = Supermarket.builder()
+                .supermarketId(id)
+                .name("Supermarket ABC")
+                .ownerId(1L)
+                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
+                .build();
+
+        CompletableFuture<Supermarket> future = CompletableFuture.completedFuture(supermarket);
+        when(supermarketService.findById(id)).thenReturn(future);
+        when(supermarketService.deleteById(id)).thenReturn(CompletableFuture.completedFuture(null));
+
+        ResponseEntity<?> responseEntity = supermarketController.deleteSupermarket(id).join();
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        verify(supermarketService, times(1)).findById(id);
+        verify(supermarketService, times(1)).deleteById(id);
+    }
 }

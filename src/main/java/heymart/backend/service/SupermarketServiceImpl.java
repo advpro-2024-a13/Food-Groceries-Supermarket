@@ -8,11 +8,8 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-
 @Service
 public class SupermarketServiceImpl implements SupermarketService {
     private final SupermarketRepository supermarketRepository;
@@ -44,13 +41,6 @@ public class SupermarketServiceImpl implements SupermarketService {
     @Override
     public CompletableFuture<Void> deleteById(UUID id) {
         supermarketRepository.deleteById(id);
-        return CompletableFuture.completedFuture(null);
-    }
-
-    @Async
-    @Override
-    public CompletableFuture<Void> editSupermarket(Supermarket editedSupermarket) {
-        supermarketRepository.save(editedSupermarket);
         return CompletableFuture.completedFuture(null);
     }
 }

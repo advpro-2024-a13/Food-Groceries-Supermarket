@@ -47,7 +47,7 @@ public class SupermarketController {
                 .thenCompose(existingSupermarket -> {
                     if (existingSupermarket != null) {
                         editedSupermarket.setSupermarketId(id);
-                        return supermarketService.editSupermarket(editedSupermarket)
+                        return supermarketService.save(editedSupermarket)
                                 .thenApply(updatedSupermarket -> ResponseEntity.ok("Supermarket with ID " + id + " updated."));
                     } else {
                         return CompletableFuture.completedFuture(ResponseEntity.badRequest().body("Supermarket not found with ID " + id));

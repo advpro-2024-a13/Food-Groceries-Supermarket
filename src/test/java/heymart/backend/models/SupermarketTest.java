@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SupermarketTest {
+class SupermarketTest {
     Supermarket supermarket;
     private Long managerId;
     private List<UUID> productIds = new ArrayList<>();
