@@ -23,8 +23,7 @@ public class Supermarket {
     private String name;
     private Long ownerId;
     @ElementCollection
-//    @CollectionTable(name = "supermarket_product_ids", joinColumns = @JoinColumn(name = "supermarket_id"))
-    @Column(columnDefinition = "UUID[]")
+    @Column(columnDefinition = "UUID")
     private List<UUID> productIds = new ArrayList<>();
 
     public void addProductId(UUID productId) {
