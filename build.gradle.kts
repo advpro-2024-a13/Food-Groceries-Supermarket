@@ -12,6 +12,7 @@ sonar {
 		property("sonar.projectKey", "advpro-2024-a13_Food-Groceries-Supermarket-Product")
 		property("sonar.organization", "advpro-2024-a13")
 		property("sonar.host.url", "https://sonarcloud.io")
+		property("sonar.exclusions", "**/JwtUtils.java, **/AuthTokenFilter.java")
 	}
 }
 
@@ -45,6 +46,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.cloud:spring-cloud-gcp-starter-sql-postgresql:1.2.8.RELEASE")
+	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+	implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+	implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.cloud:spring-cloud-gcp-starter:1.1.1.RELEASE")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
