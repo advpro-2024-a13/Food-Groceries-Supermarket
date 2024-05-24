@@ -35,4 +35,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build jacocoTestReport sonar --info
+        run: |
+          export SPRING_DATASOURCE_PASSWORD=${{ secrets.JDBC_DATABASE_PASSWORD }}
+          export SPRING_DATASOURCE_USERNAME=${{ secrets.JDBC_DATABASE_USERNAME }}
+          export SPRING_DATASOURCE_URL=jdbc:postgresql://${{ secrets.JDBC_DATABASE_URL }}/postgres
+          ./gradlew build jacocoTestReport sonar --info
