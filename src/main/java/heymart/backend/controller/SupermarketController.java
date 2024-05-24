@@ -15,9 +15,13 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping("/supermarket")
 public class SupermarketController {
 
-    @Autowired
-    private SupermarketService supermarketService;
 
+    private final SupermarketService supermarketService;
+
+    @Autowired
+    public SupermarketController(SupermarketService supermarketService) {
+        this.supermarketService = supermarketService;
+    }
 
     @GetMapping
     public CompletableFuture<ResponseEntity<List<Supermarket>>> getAllSupermarkets() {
