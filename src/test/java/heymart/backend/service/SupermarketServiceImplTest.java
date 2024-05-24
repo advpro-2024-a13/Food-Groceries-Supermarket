@@ -31,7 +31,7 @@ class SupermarketServiceImplTest {
 
     @Test
     void testFindById() throws ExecutionException, InterruptedException{
-        UUID id = UUID.randomUUID();
+        Long id = 123L;
         Supermarket supermarket = Supermarket.builder()
                 .supermarketId(id)
                 .name("Supermarket ABC")
@@ -52,14 +52,14 @@ class SupermarketServiceImplTest {
     void testFindAll() {
         List<Supermarket> supermarketList = new ArrayList<>();
         Supermarket supermarket = Supermarket.builder()
-                .supermarketId(UUID.randomUUID())
+                .supermarketId(123L)
                 .name("Supermarket ABC")
                 .ownerId(1L)
                 .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
                 .build();
         supermarketList.add(supermarket);
         Supermarket supermarket2 = Supermarket.builder()
-                .supermarketId(UUID.randomUUID())
+                .supermarketId(124L)
                 .name("Supermarket XYZ")
                 .ownerId(2L)
                 .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
@@ -69,7 +69,7 @@ class SupermarketServiceImplTest {
         when(supermarketRepository.findAll()).thenReturn(supermarketList);
 
         CompletableFuture<List<Supermarket>> futureResult = supermarketService.findAll();
-        List<Supermarket> result = futureResult.join(); // this will block until the future is complete
+        List<Supermarket> result = futureResult.join();
         assertEquals(supermarketList, result);
         verify(supermarketRepository, times(1)).findAll();
     }
@@ -84,19 +84,16 @@ class SupermarketServiceImplTest {
 
         when(supermarketRepository.save(supermarket)).thenReturn(supermarket);
 
-        CompletableFuture<Supermarket> futureResult = supermarketService.save(supermarket);
-        Supermarket result = futureResult.join(); // this will block until the future is complete
+        Supermarket result = supermarketService.save(supermarket);
         assertEquals(supermarket, result);
         verify(supermarketRepository, times(1)).save(supermarket);
     }
 
     @Test
-    void testDeleteById() throws ExecutionException, InterruptedException{
-        UUID id = UUID.randomUUID();
+    void testDeleteById(){
+        Long id = 123L;
         doNothing().when(supermarketRepository).deleteById(id);
-
-        CompletableFuture<Void> futureResult = supermarketService.deleteById(id);
-        futureResult.get(); // this will block until the future is complete
+        supermarketService.deleteById(id);
         verify(supermarketRepository, times(1)).deleteById(id);
     }
 }

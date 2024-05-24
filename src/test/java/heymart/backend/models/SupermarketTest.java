@@ -17,7 +17,7 @@ class SupermarketTest {
         managerId = 1L;
         productIds = new ArrayList<>(List.of(UUID.fromString("d144792b-40f5-42a8-b939-9df19231dba5")));
         this.supermarket = Supermarket.builder()
-                        .supermarketId(UUID.fromString("7e1924ce-323d-4a82-a40d-d16a1ae2b21f"))
+                        .supermarketId(123L)
                         .name("Supermarket ABC")
                         .ownerId(managerId)
                         .productIds(productIds)
@@ -26,7 +26,7 @@ class SupermarketTest {
 
     @Test
     void testGetId() {
-        UUID id = UUID.fromString("7e1924ce-323d-4a82-a40d-d16a1ae2b21f");
+        Long id = 123L;
         assertEquals(id, supermarket.getSupermarketId());
     }
 
@@ -64,5 +64,12 @@ class SupermarketTest {
         supermarket.addProductId(id);
         supermarket.removeProductId(id);
         assertFalse(supermarket.getProductIds().contains(id));
+    }
+
+    @Test
+    void testAddProductIdAlreadyExists() {
+        UUID existingProductId = UUID.fromString("d144792b-40f5-42a8-b939-9df19231dba5");
+        supermarket.addProductId(existingProductId);
+        assertEquals(1, supermarket.getProductIds().size());
     }
 }
