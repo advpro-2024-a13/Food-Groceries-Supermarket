@@ -21,7 +21,7 @@ public class SupermarketServiceImpl implements SupermarketService {
 
     @Async
     @Override
-    public CompletableFuture<Supermarket> findById(UUID id) {
+    public CompletableFuture<Supermarket> findById(Long id) {
        return CompletableFuture.completedFuture(supermarketRepository.findById(id).orElse(null));
     }
 
@@ -39,7 +39,7 @@ public class SupermarketServiceImpl implements SupermarketService {
 
     @Async
     @Override
-    public CompletableFuture<Void> deleteById(UUID id) {
+    public CompletableFuture<Void> deleteById(Long id) {
         supermarketRepository.deleteById(id);
         return CompletableFuture.completedFuture(null);
     }

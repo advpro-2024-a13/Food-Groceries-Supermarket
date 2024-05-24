@@ -31,7 +31,7 @@ class SupermarketServiceImplTest {
 
     @Test
     void testFindById() throws ExecutionException, InterruptedException{
-        UUID id = UUID.randomUUID();
+        Long id = 123L;
         Supermarket supermarket = Supermarket.builder()
                 .supermarketId(id)
                 .name("Supermarket ABC")
@@ -52,14 +52,14 @@ class SupermarketServiceImplTest {
     void testFindAll() {
         List<Supermarket> supermarketList = new ArrayList<>();
         Supermarket supermarket = Supermarket.builder()
-                .supermarketId(UUID.randomUUID())
+                .supermarketId(123L)
                 .name("Supermarket ABC")
                 .ownerId(1L)
                 .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
                 .build();
         supermarketList.add(supermarket);
         Supermarket supermarket2 = Supermarket.builder()
-                .supermarketId(UUID.randomUUID())
+                .supermarketId(124L)
                 .name("Supermarket XYZ")
                 .ownerId(2L)
                 .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
@@ -92,7 +92,7 @@ class SupermarketServiceImplTest {
 
     @Test
     void testDeleteById() throws ExecutionException, InterruptedException{
-        UUID id = UUID.randomUUID();
+        Long id = 123L;
         doNothing().when(supermarketRepository).deleteById(id);
 
         CompletableFuture<Void> futureResult = supermarketService.deleteById(id);

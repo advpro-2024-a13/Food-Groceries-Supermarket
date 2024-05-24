@@ -29,7 +29,7 @@ public class SupermarketControllerTest {
     @Test
     void testCreateSupermarket() {
         Supermarket supermarket = Supermarket.builder()
-                .supermarketId(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"))
+                .supermarketId(123L)
                 .name("Supermarket ABC")
                 .ownerId(1L)
                 .productIds(new ArrayList<>(List.of(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"),
@@ -49,7 +49,7 @@ public class SupermarketControllerTest {
 
     @Test
     public void testGetSupermarketById() {
-        UUID id = UUID.randomUUID();
+        Long id = 123L;
         List<UUID> productId = new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID()));
         Supermarket supermarket = Supermarket.builder()
                 .supermarketId(id)
@@ -71,14 +71,14 @@ public class SupermarketControllerTest {
     public void testGetAllSupermarkets() {
         List<Supermarket> supermarketList = new ArrayList<>();
         Supermarket supermarket = Supermarket.builder()
-                .supermarketId(UUID.randomUUID())
+                .supermarketId(123L)
                 .name("Supermarket ABC")
                 .ownerId(1L)
                 .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
                 .build();
         supermarketList.add(supermarket);
         Supermarket supermarket2 = Supermarket.builder()
-                .supermarketId(UUID.randomUUID())
+                .supermarketId(124L)
                 .name("Supermarket XYZ")
                 .ownerId(2L)
                 .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID())))
@@ -97,7 +97,7 @@ public class SupermarketControllerTest {
 
     @Test
     public void testEditSupermarket() {
-        UUID id = UUID.randomUUID();
+        Long id = 123L;
         Supermarket supermarket = Supermarket.builder()
                 .supermarketId(id)
                 .name("Supermarket ABC")
@@ -125,7 +125,7 @@ public class SupermarketControllerTest {
 
     @Test
     public void testDeleteSupermarket() {
-        UUID id = UUID.randomUUID();
+        Long id = 123L;
         Supermarket supermarket = Supermarket.builder()
                 .supermarketId(id)
                 .name("Supermarket ABC")

@@ -34,7 +34,7 @@ public class SupermarketController {
     }
 
     @GetMapping("/{id}")
-    public CompletableFuture<ResponseEntity<Supermarket>> getSupermarketById(@PathVariable UUID id) {
+    public CompletableFuture<ResponseEntity<Supermarket>> getSupermarketById(@PathVariable Long id) {
         return supermarketService.findById(id)
                 .thenApply(supermarket -> {
                     if (supermarket != null) {
@@ -46,7 +46,7 @@ public class SupermarketController {
     }
 
     @PutMapping("edit/{id}")
-    public CompletableFuture<ResponseEntity<String>> editSupermarket(@PathVariable UUID id, @RequestBody Supermarket editedSupermarket) {
+    public CompletableFuture<ResponseEntity<String>> editSupermarket(@PathVariable Long id, @RequestBody Supermarket editedSupermarket) {
         return supermarketService.findById(id)
                 .thenCompose(existingSupermarket -> {
                     if (existingSupermarket != null) {
@@ -60,7 +60,7 @@ public class SupermarketController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public CompletableFuture<ResponseEntity<String>> deleteSupermarket(@PathVariable UUID id) {
+    public CompletableFuture<ResponseEntity<String>> deleteSupermarket(@PathVariable Long id) {
         return supermarketService.findById(id)
                 .thenCompose(existingSupermarket -> {
                     if (existingSupermarket != null) {
