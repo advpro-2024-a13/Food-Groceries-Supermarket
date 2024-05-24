@@ -29,7 +29,7 @@ public class SupermarketControllerTest {
     @Test
     void testCreateSupermarket() {
         Supermarket supermarket = Supermarket.builder()
-                .supermarketId(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"))
+                .supermarketId(123L)
                 .name("Supermarket ABC")
                 .ownerId(1L)
                 .productIds(new ArrayList<>(List.of(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"),
@@ -37,10 +37,9 @@ public class SupermarketControllerTest {
                         UUID.fromString("123e4567-e89b-12d3-a456-426614174002"))))
                 .build();
 
-        CompletableFuture<Supermarket> future = CompletableFuture.completedFuture(supermarket);
-        when(supermarketService.save(any(Supermarket.class))).thenReturn(future);
+        when(supermarketService.save(any(Supermarket.class))).thenReturn(supermarket);
 
-        ResponseEntity<?> responseEntity = supermarketController.createSupermarket(supermarket).join();
+        ResponseEntity<Supermarket> responseEntity = supermarketController.createSupermarket(supermarket);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(supermarket, responseEntity.getBody());
@@ -49,7 +48,7 @@ public class SupermarketControllerTest {
 
     @Test
     public void testGetSupermarketById() {
-        UUID id = UUID.randomUUID();
+        Long id = 123L;
         List<UUID> productId = new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID()));
         Supermarket supermarket = Supermarket.builder()
                 .supermarketId(id)
@@ -71,14 +70,14 @@ public class SupermarketControllerTest {
     public void testGetAllSupermarkets() {
         List<Supermarket> supermarketList = new ArrayList<>();
         Supermarket supermarket = Supermarket.builder()
-                .supermarketId(UUID.randomUUID())
+                .supermarketId(123L)
                 .name("Supermarket ABC")
                 .ownerId(1L)
                 .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
                 .build();
         supermarketList.add(supermarket);
         Supermarket supermarket2 = Supermarket.builder()
-                .supermarketId(UUID.randomUUID())
+                .supermarketId(124L)
                 .name("Supermarket XYZ")
                 .ownerId(2L)
                 .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID())))
@@ -97,7 +96,7 @@ public class SupermarketControllerTest {
 
     @Test
     public void testEditSupermarket() {
-        UUID id = UUID.randomUUID();
+        Long id = 123L;
         Supermarket supermarket = Supermarket.builder()
                 .supermarketId(id)
                 .name("Supermarket ABC")
@@ -112,11 +111,9 @@ public class SupermarketControllerTest {
                 .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID())))
                 .build();
 
-        CompletableFuture<Supermarket> future = CompletableFuture.completedFuture(supermarket);
-        when(supermarketService.findById(id)).thenReturn(future);
-        when(supermarketService.save(editedSupermarket)).thenReturn(CompletableFuture.completedFuture(editedSupermarket));
-
-        ResponseEntity<?> responseEntity = supermarketController.editSupermarket(id, editedSupermarket).join();
+            when(supermarketService.findById(id)).thenReturn(CompletableFuture.completedFuture(supermarket));
+            when(supermarketService.save(editedSupermarket)).thenReturn(editedSupermarket);
+        ResponseEntity<String> responseEntity = supermarketController.editSupermarket(id, editedSupermarket);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         verify(supermarketService, times(1)).findById(id);
@@ -124,8 +121,28 @@ public class SupermarketControllerTest {
     }
 
     @Test
-    public void testDeleteSupermarket() {
-        UUID id = UUID.randomUUID();
+    void testEditSupermarketNotFound() {
+        Long id = 123L;
+        Supermarket editedSupermarket = Supermarket.builder()
+                .supermarketId(id)
+                .name("Supermarket XYZ")
+                .ownerId(2L)
+                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID())))
+                .build();
+
+        when(supermarketService.findById(id)).thenReturn(CompletableFuture.completedFuture(null));
+
+        ResponseEntity<String> responseEntity = supermarketController.editSupermarket(id, editedSupermarket);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Supermarket not found with ID " + id, responseEntity.getBody());
+        verify(supermarketService, times(1)).findById(id);
+        verify(supermarketService, times(0)).save(editedSupermarket);
+    }
+
+    @Test
+    void testDeleteSupermarket() {
+        Long id = 123L;
         Supermarket supermarket = Supermarket.builder()
                 .supermarketId(id)
                 .name("Supermarket ABC")
@@ -135,12 +152,37 @@ public class SupermarketControllerTest {
 
         CompletableFuture<Supermarket> future = CompletableFuture.completedFuture(supermarket);
         when(supermarketService.findById(id)).thenReturn(future);
-        when(supermarketService.deleteById(id)).thenReturn(CompletableFuture.completedFuture(null));
+        when(supermarketService.findById(id)).thenReturn(CompletableFuture.completedFuture(supermarket));
 
-        ResponseEntity<?> responseEntity = supermarketController.deleteSupermarket(id).join();
+
+        ResponseEntity<String> responseEntity = supermarketController.deleteSupermarket(id);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         verify(supermarketService, times(1)).findById(id);
         verify(supermarketService, times(1)).deleteById(id);
+    }
+
+    @Test
+    void testDeleteSupermarketNotFound() {
+        Long id = 123L;
+        when(supermarketService.findById(id)).thenReturn(CompletableFuture.completedFuture(null));
+
+        ResponseEntity<String> responseEntity = supermarketController.deleteSupermarket(id);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Supermarket not found with ID " + id, responseEntity.getBody());
+        verify(supermarketService, times(1)).findById(id);
+        verify(supermarketService, times(0)).deleteById(id);
+    }
+
+    @Test
+    void testGetSupermarketByIdNotFound() {
+        Long id = 123L;
+
+        when(supermarketService.findById(id)).thenReturn(CompletableFuture.completedFuture(null));
+
+        ResponseEntity<?> responseEntity = supermarketController.getSupermarketById(id).join();
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        verify(supermarketService, times(1)).findById(id);
     }
 }

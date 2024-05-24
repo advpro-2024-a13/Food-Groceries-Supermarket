@@ -33,14 +33,56 @@ class ProductControllerTest {
                 .productQuantity(10)
                 .build();
 
-        CompletableFuture<Product> future = CompletableFuture.completedFuture(product);
-        when(productService.createProduct(any(Product.class))).thenReturn(future);
+        when(productService.createProduct(any(Product.class))).thenReturn(product);
 
-        ResponseEntity<?> responseEntity = productController.createProduct(product).join();
+        ResponseEntity<Product> responseEntity = productController.createProduct(product);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(product, responseEntity.getBody());
         verify(productService, times(1)).createProduct(product);
+    }
+
+    @Test
+    void testDeleteProductFound() {
+        UUID productId = UUID.randomUUID();
+        Product existingProduct = Product.builder()
+                .productId(productId)
+                .productName("Test Product")
+                .productQuantity(10)
+                .build();
+
+        CompletableFuture<Product> future = CompletableFuture.completedFuture(existingProduct);
+        when(productService.findByProductId(productId)).thenReturn(future);
+
+        ResponseEntity<String> responseEntity = productController.deleteProduct(productId);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("Product with ID " + productId + " deleted.", responseEntity.getBody());
+        verify(productService, times(1)).deleteProduct(productId);
+    }
+
+    @Test
+    void testEditProductFound() {
+        UUID productId = UUID.randomUUID();
+        Product existingProduct = Product.builder()
+                .productId(productId)
+                .productName("Existing Product")
+                .productQuantity(20)
+                .build();
+        Product updatedProduct = Product.builder()
+                .productId(productId)
+                .productName("Updated Product")
+                .productQuantity(30)
+                .build();
+
+        CompletableFuture<Product> future = CompletableFuture.completedFuture(existingProduct);
+        when(productService.findByProductId(productId)).thenReturn(future);
+
+        ResponseEntity<String> responseEntity = productController.editProduct(updatedProduct);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("Product edited successfully.", responseEntity.getBody());
+        verify(productService, times(1)).editProduct(updatedProduct);
     }
 
     @Test
@@ -50,7 +92,7 @@ class ProductControllerTest {
         CompletableFuture<Product> future = CompletableFuture.completedFuture(null);
         when(productService.findByProductId(productId)).thenReturn(future);
 
-        ResponseEntity<?> responseEntity = productController.deleteProduct(productId).join();
+        ResponseEntity<String> responseEntity = productController.deleteProduct(productId);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertEquals("Product not found with ID " + productId, responseEntity.getBody());
@@ -69,12 +111,14 @@ class ProductControllerTest {
         CompletableFuture<Product> future = CompletableFuture.completedFuture(null);
         when(productService.findByProductId(productId)).thenReturn(future);
 
-        ResponseEntity<?> responseEntity = productController.editProduct(product).join();
+        ResponseEntity<String> responseEntity = productController.editProduct(product);
 
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
         assertEquals("Product not found with ID " + productId, responseEntity.getBody());
         verify(productService, never()).editProduct(product);
     }
+
+
 
     @Test
     void testFindByProductIdFound() {
@@ -88,7 +132,7 @@ class ProductControllerTest {
         CompletableFuture<Product> future = CompletableFuture.completedFuture(product);
         when(productService.findByProductId(productId)).thenReturn(future);
 
-        ResponseEntity<?> responseEntity = productController.findByProductId(productId).join();
+        ResponseEntity<Product> responseEntity = productController.findByProductId(productId).join();
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(product, responseEntity.getBody());
@@ -128,7 +172,7 @@ class ProductControllerTest {
         CompletableFuture<List<Product>> future = CompletableFuture.completedFuture(productList);
         when(productService.findBySupermarketOwnerId(ownerId)).thenReturn(future);
 
-        ResponseEntity<?> responseEntity = productController.findBySupermarketOwnerId(ownerId).join();
+        ResponseEntity<List<Product>> responseEntity = productController.findBySupermarketOwnerId(ownerId).join();
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(productList, responseEntity.getBody());
@@ -154,7 +198,7 @@ class ProductControllerTest {
         CompletableFuture<List<Product>> future = CompletableFuture.completedFuture(productList);
         when(productService.findAllProducts()).thenReturn(future);
 
-        ResponseEntity<?> responseEntity = productController.findAllProducts().join();
+        ResponseEntity<List<Product>> responseEntity = productController.findAllProducts().join();
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(productList, responseEntity.getBody());
