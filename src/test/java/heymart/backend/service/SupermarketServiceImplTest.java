@@ -36,7 +36,7 @@ class SupermarketServiceImplTest {
                 .supermarketId(id)
                 .name("Supermarket ABC")
                 .ownerId(1L)
-                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
+//                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
                 .build();
 
         when(supermarketRepository.findById(id)).thenReturn(Optional.of(supermarket));
@@ -55,14 +55,14 @@ class SupermarketServiceImplTest {
                 .supermarketId(123L)
                 .name("Supermarket ABC")
                 .ownerId(1L)
-                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
+//                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
                 .build();
         supermarketList.add(supermarket);
         Supermarket supermarket2 = Supermarket.builder()
                 .supermarketId(124L)
                 .name("Supermarket XYZ")
                 .ownerId(2L)
-                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
+//                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
                 .build();
         supermarketList.add(supermarket2);
 
@@ -79,7 +79,7 @@ class SupermarketServiceImplTest {
         Supermarket supermarket = Supermarket.builder()
                 .name("Test Supermarket")
                 .ownerId(1L)
-                .productIds(new ArrayList<>(List.of(UUID.randomUUID())))
+//                .productIds(new ArrayList<>(List.of(UUID.randomUUID())))
                 .build();
 
         when(supermarketRepository.save(supermarket)).thenReturn(supermarket);
