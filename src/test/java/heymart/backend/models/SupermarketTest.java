@@ -40,4 +40,26 @@ class SupermarketTest {
         supermarket.setName("Supermarket XYZ");
         assertEquals("Supermarket XYZ", supermarket.getName());
     }
+
+    @Test
+    void testGetDescription() {
+        assertEquals("Warung ini menyediakan berbagai macam barang kebutuhan anda sehari - hari", supermarket.getSupermarketDescription());
+    }
+
+    @Test
+    void testSetDescription() {
+        supermarket.setSupermarketDescription("Warung ini tempat praktik money laundering");
+        assertEquals("Warung ini tempat praktik money laundering", supermarket.getSupermarketDescription());
+    }
+
+    @Test
+    void testGetImage() {
+        assertEquals("https://pbs.twimg.com/media/GKRGnu-WUAAszQP.jpg", supermarket.getSupermarketImage());
+    }
+
+    @Test
+    void testSetImage() {
+        supermarket.setSupermarketImage("https://tr.rbxcdn.com/732d895056cc76da9bb3b56bee353053/420/420/Hat/Png");
+        assertEquals("https://tr.rbxcdn.com/732d895056cc76da9bb3b56bee353053/420/420/Hat/Png", supermarket.getSupermarketImage());
+    }
 }
