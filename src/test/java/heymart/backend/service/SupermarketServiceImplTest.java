@@ -69,7 +69,7 @@ class SupermarketServiceImplTest {
         when(supermarketRepository.findAll()).thenReturn(supermarketList);
 
         CompletableFuture<List<Supermarket>> futureResult = supermarketService.findAll();
-        List<Supermarket> result = futureResult.join(); // this will block until the future is complete
+        List<Supermarket> result = futureResult.join();
         assertEquals(supermarketList, result);
         verify(supermarketRepository, times(1)).findAll();
     }
@@ -84,20 +84,15 @@ class SupermarketServiceImplTest {
 
         when(supermarketRepository.save(supermarket)).thenReturn(supermarket);
 
-//        CompletableFuture<Supermarket> futureResult = supermarketService.save(supermarket);
-//        Supermarket result = futureResult.join(); // this will block until the future is complete
         Supermarket result = supermarketService.save(supermarket);
         assertEquals(supermarket, result);
         verify(supermarketRepository, times(1)).save(supermarket);
     }
 
     @Test
-    void testDeleteById() throws ExecutionException, InterruptedException{
+    void testDeleteById(){
         Long id = 123L;
         doNothing().when(supermarketRepository).deleteById(id);
-
-//        CompletableFuture<Void> futureResult = supermarketService.deleteById(id);
-//        futureResult.get(); // this will block until the future is complete
         supermarketService.deleteById(id);
         verify(supermarketRepository, times(1)).deleteById(id);
     }

@@ -65,4 +65,11 @@ class SupermarketTest {
         supermarket.removeProductId(id);
         assertFalse(supermarket.getProductIds().contains(id));
     }
+
+    @Test
+    void testAddProductIdAlreadyExists() {
+        UUID existingProductId = UUID.fromString("d144792b-40f5-42a8-b939-9df19231dba5");
+        supermarket.addProductId(existingProductId);
+        assertEquals(1, supermarket.getProductIds().size());
+    }
 }

@@ -121,6 +121,26 @@ public class SupermarketControllerTest {
     }
 
     @Test
+    public void testEditSupermarketNotFound() {
+        Long id = 123L;
+        Supermarket editedSupermarket = Supermarket.builder()
+                .supermarketId(id)
+                .name("Supermarket XYZ")
+                .ownerId(2L)
+                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID())))
+                .build();
+
+        when(supermarketService.findById(id)).thenReturn(CompletableFuture.completedFuture(null));
+
+        ResponseEntity<String> responseEntity = supermarketController.editSupermarket(id, editedSupermarket);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Supermarket not found with ID " + id, responseEntity.getBody());
+        verify(supermarketService, times(1)).findById(id);
+        verify(supermarketService, times(0)).save(editedSupermarket);
+    }
+
+    @Test
     public void testDeleteSupermarket() {
         Long id = 123L;
         Supermarket supermarket = Supermarket.builder()
@@ -140,5 +160,33 @@ public class SupermarketControllerTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         verify(supermarketService, times(1)).findById(id);
         verify(supermarketService, times(1)).deleteById(id);
+    }
+
+    @Test
+    public void testDeleteSupermarketNotFound() {
+        Long id = 123L;
+
+        // Simulate that the supermarket with the given ID does not exist
+        when(supermarketService.findById(id)).thenReturn(CompletableFuture.completedFuture(null));
+
+        ResponseEntity<String> responseEntity = supermarketController.deleteSupermarket(id);
+
+        // Assert that the response status is BAD_REQUEST and the correct message is returned
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Supermarket not found with ID " + id, responseEntity.getBody());
+        verify(supermarketService, times(1)).findById(id);
+        verify(supermarketService, times(0)).deleteById(id);
+    }
+
+    @Test
+    public void testGetSupermarketByIdNotFound() {
+        Long id = 123L;
+
+        when(supermarketService.findById(id)).thenReturn(CompletableFuture.completedFuture(null));
+
+        ResponseEntity<?> responseEntity = supermarketController.getSupermarketById(id).join();
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        verify(supermarketService, times(1)).findById(id);
     }
 }
