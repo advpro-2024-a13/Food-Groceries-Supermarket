@@ -22,39 +22,35 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public CompletableFuture<ResponseEntity<Product>> createProduct(@RequestBody Product product) {
-        return productService.createProduct(product)
-                .thenApply(ResponseEntity::ok);
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        Product createdProduct = productService.createProduct(product);
+        return ResponseEntity.ok(createdProduct);
     }
 
+
     @DeleteMapping("/delete/{id}")
-    public CompletableFuture<ResponseEntity<String>> deleteProduct(@PathVariable UUID id) {
-        return productService.findByProductId(id)
-                .thenCompose(existingProduct -> {
-                    if (existingProduct != null) {
-                        return productService.deleteProduct(id)
-                                .thenApply(deleted -> ResponseEntity.ok("Product with ID " + id + " deleted."));
-                    } else {
-                        return CompletableFuture.completedFuture(ResponseEntity.badRequest().body("Product not found with ID " + id));
-                    }
-                });
+    public ResponseEntity<String> deleteProduct(@PathVariable UUID id) {
+        Product existingProduct = productService.findByProductId(id).join(); // Blocking until the CompletableFuture completes
+        if (existingProduct != null) {
+            productService.deleteProduct(id);
+            return ResponseEntity.ok("Product with ID " + id + " deleted.");
+        } else {
+            return ResponseEntity.badRequest().body("Product not found with ID " + id);
+        }
     }
 
 
     @PutMapping("/edit")
-    public CompletableFuture<ResponseEntity<String>> editProduct(@RequestBody Product product) {
+    public ResponseEntity<String> editProduct(@RequestBody Product product) {
         UUID productId = product.getProductId();
-        return productService.findByProductId(productId)
-                .thenCompose(existingProduct -> {
-                    if (existingProduct != null) {
-                        return productService.editProduct(product)
-                                .thenApply(updated -> ResponseEntity.ok("Product edited successfully."));
-                    } else {
-                        return CompletableFuture.completedFuture(ResponseEntity.badRequest().body("Product not found with ID " + productId));
-                    }
-                });
+        Product existingProduct = productService.findByProductId(productId).join(); // Blocking until the CompletableFuture completes
+        if (existingProduct != null) {
+            productService.editProduct(product);
+            return ResponseEntity.ok("Product edited successfully.");
+        } else {
+            return ResponseEntity.badRequest().body("Product not found with ID " + productId);
+        }
     }
-
 
     @GetMapping("/findById/{id}")
     public CompletableFuture<ResponseEntity<Product>> findByProductId(@PathVariable UUID id) {
