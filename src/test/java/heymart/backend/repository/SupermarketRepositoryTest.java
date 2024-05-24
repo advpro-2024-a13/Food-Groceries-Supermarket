@@ -20,7 +20,7 @@ class SupermarketRepositoryTest {
 
     @Test
     void testFindById() {
-        UUID id = UUID.randomUUID();
+        Long id = 123L;
         Supermarket supermarket = Supermarket.builder()
                 .supermarketId(id)
                 .name("Supermarket ABC")
@@ -37,7 +37,7 @@ class SupermarketRepositoryTest {
 
     @Test
     void testSave() {
-        UUID id = UUID.randomUUID();
+        Long id = 124L;
         Supermarket supermarket = Supermarket.builder()
                 .supermarketId(id)
                 .name("Supermarket ABC")

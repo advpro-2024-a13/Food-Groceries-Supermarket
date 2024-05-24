@@ -19,7 +19,7 @@ import lombok.*;
 public class Supermarket {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID supermarketId;
+    private Long supermarketId;
     private String name;
     private Long ownerId;
     @ElementCollection
