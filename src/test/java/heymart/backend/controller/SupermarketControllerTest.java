@@ -32,9 +32,9 @@ public class SupermarketControllerTest {
                 .supermarketId(123L)
                 .name("Supermarket ABC")
                 .ownerId(1L)
-                .productIds(new ArrayList<>(List.of(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"),
-                        UUID.fromString("123e4567-e89b-12d3-a456-426614174001"),
-                        UUID.fromString("123e4567-e89b-12d3-a456-426614174002"))))
+//                .productIds(new ArrayList<>(List.of(UUID.fromString("123e4567-e89b-12d3-a456-426614174000"),
+//                        UUID.fromString("123e4567-e89b-12d3-a456-426614174001"),
+//                        UUID.fromString("123e4567-e89b-12d3-a456-426614174002"))))
                 .build();
 
         when(supermarketService.save(any(Supermarket.class))).thenReturn(supermarket);
@@ -49,12 +49,12 @@ public class SupermarketControllerTest {
     @Test
     public void testGetSupermarketById() {
         Long id = 123L;
-        List<UUID> productId = new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID()));
+//        List<UUID> productId = new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID()));
         Supermarket supermarket = Supermarket.builder()
                 .supermarketId(id)
                 .name("Supermarket ABC")
                 .ownerId(1L)
-                .productIds(productId)
+//                .productIds(productId)
                 .build();
 
         CompletableFuture<Supermarket> future = CompletableFuture.completedFuture(supermarket);
@@ -73,14 +73,14 @@ public class SupermarketControllerTest {
                 .supermarketId(123L)
                 .name("Supermarket ABC")
                 .ownerId(1L)
-                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
+//                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
                 .build();
         supermarketList.add(supermarket);
         Supermarket supermarket2 = Supermarket.builder()
                 .supermarketId(124L)
                 .name("Supermarket XYZ")
                 .ownerId(2L)
-                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID())))
+//                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID())))
                 .build();
         supermarketList.add(supermarket2);
 
@@ -101,14 +101,14 @@ public class SupermarketControllerTest {
                 .supermarketId(id)
                 .name("Supermarket ABC")
                 .ownerId(1L)
-                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
+//                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
                 .build();
 
         Supermarket editedSupermarket = Supermarket.builder()
                 .supermarketId(id)
                 .name("Supermarket XYZ")
                 .ownerId(2L)
-                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID())))
+//                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID())))
                 .build();
 
             when(supermarketService.findById(id)).thenReturn(CompletableFuture.completedFuture(supermarket));
@@ -127,7 +127,7 @@ public class SupermarketControllerTest {
                 .supermarketId(id)
                 .name("Supermarket XYZ")
                 .ownerId(2L)
-                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID())))
+//                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID())))
                 .build();
 
         when(supermarketService.findById(id)).thenReturn(CompletableFuture.completedFuture(null));
@@ -147,7 +147,7 @@ public class SupermarketControllerTest {
                 .supermarketId(id)
                 .name("Supermarket ABC")
                 .ownerId(1L)
-                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
+//                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
                 .build();
 
         CompletableFuture<Supermarket> future = CompletableFuture.completedFuture(supermarket);

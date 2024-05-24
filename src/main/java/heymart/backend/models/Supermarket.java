@@ -22,17 +22,17 @@ public class Supermarket {
     private Long supermarketId;
     private String name;
     private Long ownerId;
-    @ElementCollection
-    @Column(columnDefinition = "UUID")
-    private List<UUID> productIds = new ArrayList<>();
-
-    public void addProductId(UUID productId) {
-        if (!productIds.contains(productId)) {
-            productIds.add(productId);
-        }
-    }
-
-    public void removeProductId(UUID productId) {
-        productIds.remove(productId);
-    }
+//    @ElementCollection
+//    @Column(columnDefinition = "UUID")
+//    private List<UUID> productIds = new ArrayList<>();
+//
+//    public void addProductId(UUID productId) {
+//        if (!productIds.contains(productId)) {
+//            productIds.add(productId);
+//        }
+//    }
+//
+//    public void removeProductId(UUID productId) {
+//        productIds.remove(productId);
+//    }
 }

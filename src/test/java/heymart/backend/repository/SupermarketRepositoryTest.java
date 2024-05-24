@@ -25,7 +25,7 @@ class SupermarketRepositoryTest {
                 .supermarketId(id)
                 .name("Supermarket ABC")
                 .ownerId(1L)
-                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
+//                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
                 .build();
 
         when(supermarketRepository.findById(id)).thenReturn(Optional.of(supermarket));
@@ -42,7 +42,7 @@ class SupermarketRepositoryTest {
                 .supermarketId(id)
                 .name("Supermarket ABC")
                 .ownerId(1L)
-                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
+//                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
                 .build();
 
         when(supermarketRepository.save(supermarket)).thenReturn(supermarket);
