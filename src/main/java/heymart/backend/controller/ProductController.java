@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -41,7 +41,7 @@ public class ProductController {
     }
 
     @PatchMapping("/subtractQuantity")
-    public ResponseEntity<String> subtractProductQuantity(@RequestBody HashMap<String, String> JSON) {
+    public ResponseEntity<String> subtractProductQuantity(@RequestBody Map<String, String> JSON) {
         try {
             UUID productId = UUID.fromString(JSON.get("productId"));
             int productQuantity = Integer.parseInt(JSON.get("quantity"));

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -36,8 +37,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void subtractQuantity(UUID productId, int quantity) throws IllegalArgumentException {
-        Product product = findByProductId(productId).join();;
-        if (product != null) {
+        Optional<Product> productOptional = productRepository.findById(productId);
+
+        if (productOptional.isPresent()) {
+            Product product = productOptional.get();
             int remainingQuantity = product.getProductQuantity() - quantity;
             if (remainingQuantity >= 0) {
                 product.setProductQuantity(remainingQuantity);

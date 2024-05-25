@@ -205,7 +205,7 @@ class ProductControllerTest {
     }
 
     @Test
-    public void testSubtractProductQuantity_Success() {
+    void testSubtractProductQuantity_Success() {
         HashMap<String, String> JSON = new HashMap<>();
         JSON.put("productId", "3fa85f64-5717-4562-b3fc-2c963f66afa6");
         JSON.put("quantity", "10");
@@ -217,7 +217,7 @@ class ProductControllerTest {
     }
 
     @Test
-    public void testSubtractProductQuantity_BadRequest_InvalidUUID() {
+    void testSubtractProductQuantity_BadRequest_InvalidUUID() {
         HashMap<String, String> JSON = new HashMap<>();
         JSON.put("productId", "invalid-uuid-format");
         JSON.put("quantity", "10");
@@ -229,7 +229,7 @@ class ProductControllerTest {
     }
 
     @Test
-    public void testSubtractProductQuantity_BadRequest_IllegalArgumentException() {
+    void testSubtractProductQuantity_BadRequest_IllegalArgumentException() {
         UUID productId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
         HashMap<String, String> JSON = new HashMap<>();
         JSON.put("productId", productId.toString());
