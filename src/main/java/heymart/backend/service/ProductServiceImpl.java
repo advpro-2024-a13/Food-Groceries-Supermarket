@@ -34,6 +34,22 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
     }
 
+    @Override
+    public void subtractQuantity(UUID productId, int quantity) throws IllegalArgumentException {
+        Product product = findByProductId(productId).join();;
+        if (product != null) {
+            int remainingQuantity = product.getProductQuantity() - quantity;
+            if (remainingQuantity >= 0) {
+                product.setProductQuantity(remainingQuantity);
+                productRepository.save(product);
+            } else {
+                throw new IllegalArgumentException("Insufficient quantity for product with ID: " + productId);
+            }
+        } else {
+            throw new IllegalArgumentException("Product not found with ID: " + productId);
+        }
+    }
+
     @Async
     @Override
     public CompletableFuture<Product> findByProductId(UUID id) {
