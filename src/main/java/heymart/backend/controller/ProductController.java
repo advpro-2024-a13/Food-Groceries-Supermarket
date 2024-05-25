@@ -31,7 +31,7 @@ public class ProductController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable UUID id) {
-        Product existingProduct = productService.findByProductId(id).join(); // Blocking until the CompletableFuture completes
+        Product existingProduct = productService.findByProductId(id).join();
         if (existingProduct != null) {
             productService.deleteProduct(id);
             return ResponseEntity.ok("Product with ID " + id + " deleted.");
@@ -41,10 +41,10 @@ public class ProductController {
     }
 
     @PatchMapping("/subtractQuantity")
-    public ResponseEntity<String> subtractProductQuantity(@RequestBody Map<String, String> JSON) {
+    public ResponseEntity<String> subtractProductQuantity(@RequestBody Map<String, String> json) {
         try {
-            UUID productId = UUID.fromString(JSON.get("productId"));
-            int productQuantity = Integer.parseInt(JSON.get("quantity"));
+            UUID productId = UUID.fromString(json.get("productId"));
+            int productQuantity = Integer.parseInt(json.get("quantity"));
             productService.subtractQuantity(productId, productQuantity);
             return ResponseEntity.ok("Product quantity subtracted successfully");
         } catch (IllegalArgumentException ex) {

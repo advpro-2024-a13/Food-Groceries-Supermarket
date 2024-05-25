@@ -148,7 +148,7 @@ class ProductServiceTest {
     }
 
     @Test
-    void testSubtractQuantity_Success() throws ExecutionException, InterruptedException {
+    void testSubtractQuantity_Success() {
         UUID productId = UUID.randomUUID();
         Product product = Product.builder()
                 .productId(productId)
