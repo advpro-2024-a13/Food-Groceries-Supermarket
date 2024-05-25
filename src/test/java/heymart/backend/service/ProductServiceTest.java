@@ -9,9 +9,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class ProductServiceTest {
@@ -143,5 +145,62 @@ class ProductServiceTest {
         }
 
         verify(productRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testSubtractQuantity_Success() {
+        UUID productId = UUID.randomUUID();
+        Product product = Product.builder()
+                .productId(productId)
+                .productName("Test Product")
+                .productQuantity(10)
+                .build();
+
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        doAnswer(invocation -> {
+            Product savedProduct = invocation.getArgument(0);
+            assertEquals(5, savedProduct.getProductQuantity());
+            return savedProduct;
+        }).when(productRepository).save(any(Product.class));
+
+        productService.subtractQuantity(productId, 5);
+
+        verify(productRepository, times(1)).findById(productId);
+        verify(productRepository, times(1)).save(any(Product.class));
+    }
+
+    @Test
+    void testSubtractQuantity_InsufficientQuantity() {
+        UUID productId = UUID.randomUUID();
+        Product product = Product.builder()
+                .productId(productId)
+                .productName("Test Product")
+                .productQuantity(3)
+                .build();
+
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            productService.subtractQuantity(productId, 5);
+        });
+
+        assertEquals("Insufficient quantity for product with ID: " + productId, exception.getMessage());
+        verify(productRepository, times(1)).findById(productId);
+        verify(productRepository, times(0)).save(any(Product.class));
+    }
+
+    @Test
+    void testSubtractQuantity_ProductNotFound() {
+        UUID productId = UUID.randomUUID();
+
+        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            productService.subtractQuantity(productId, 5);
+        });
+
+        assertEquals("Product not found with ID: " + productId, exception.getMessage());
+        verify(productRepository, times(1)).findById(productId);
+        verify(productRepository, times(0)).save(any(Product.class));
     }
 }

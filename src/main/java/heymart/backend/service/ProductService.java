@@ -12,5 +12,6 @@ public interface ProductService {
     CompletableFuture<Product> findByProductId(UUID id);
     CompletableFuture<List<Product>> findBySupermarketOwnerId(Long ownerId);
     void editProduct(Product editedProduct);
+    void subtractQuantity(UUID productId, int quantity);
     CompletableFuture<List<Product>> findAllProducts();
 }
