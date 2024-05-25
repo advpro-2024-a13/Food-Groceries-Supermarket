@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -118,8 +119,6 @@ class ProductControllerTest {
         verify(productService, never()).editProduct(product);
     }
 
-
-
     @Test
     void testFindByProductIdFound() {
         UUID productId = UUID.randomUUID();
@@ -203,5 +202,43 @@ class ProductControllerTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(productList, responseEntity.getBody());
         verify(productService, times(1)).findAllProducts();
+    }
+
+    @Test
+    public void testSubtractProductQuantity_Success() {
+        HashMap<String, String> JSON = new HashMap<>();
+        JSON.put("productId", "3fa85f64-5717-4562-b3fc-2c963f66afa6");
+        JSON.put("quantity", "10");
+
+        ResponseEntity<String> response = productController.subtractProductQuantity(JSON);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Product quantity subtracted successfully", response.getBody());
+    }
+
+    @Test
+    public void testSubtractProductQuantity_BadRequest_InvalidUUID() {
+        HashMap<String, String> JSON = new HashMap<>();
+        JSON.put("productId", "invalid-uuid-format");
+        JSON.put("quantity", "10");
+
+        ResponseEntity<String> response = productController.subtractProductQuantity(JSON);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Invalid UUID string: invalid-uuid-format", response.getBody());
+    }
+
+    @Test
+    public void testSubtractProductQuantity_BadRequest_IllegalArgumentException() {
+        UUID productId = UUID.fromString("3fa85f64-5717-4562-b3fc-2c963f66afa6");
+        HashMap<String, String> JSON = new HashMap<>();
+        JSON.put("productId", productId.toString());
+        JSON.put("quantity", "invalid-quantity-format");
+
+        ResponseEntity<String> response = productController.subtractProductQuantity(JSON);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("For input string: invalid-quantity-format", response.getBody().replace("\"", ""));
+
     }
 }
