@@ -10,4 +10,5 @@ public interface SupermarketService {
     CompletableFuture<List<Supermarket>> findAll();
     Supermarket save(Supermarket supermarket);
     void deleteById(Long id);
+    Supermarket findByOwnerId(long ownerId);
 }
