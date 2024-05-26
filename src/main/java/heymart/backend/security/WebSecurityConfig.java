@@ -38,6 +38,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/product/findById/*").permitAll()
                         .requestMatchers("/product/findByOwnerId/*").permitAll()
                         .requestMatchers("/supermarket/**").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest()
                         .authenticated()
                 );
