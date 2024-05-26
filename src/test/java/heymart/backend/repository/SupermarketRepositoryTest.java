@@ -25,7 +25,8 @@ class SupermarketRepositoryTest {
                 .supermarketId(id)
                 .name("Supermarket ABC")
                 .ownerId(1L)
-                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
+                .supermarketDescription("Warung ini menyediakan berbagai macam barang kebutuhan anda sehari - hari")
+                .supermarketImage("https://pbs.twimg.com/media/GKRGnu-WUAAszQP.jpg")
                 .build();
 
         when(supermarketRepository.findById(id)).thenReturn(Optional.of(supermarket));
@@ -42,7 +43,8 @@ class SupermarketRepositoryTest {
                 .supermarketId(id)
                 .name("Supermarket ABC")
                 .ownerId(1L)
-                .productIds(new ArrayList<>(Arrays.asList(UUID.randomUUID(), UUID.randomUUID(), UUID.randomUUID())))
+                .supermarketDescription("Warung ini menyediakan berbagai macam barang kebutuhan anda sehari - hari")
+                .supermarketImage("https://pbs.twimg.com/media/GKRGnu-WUAAszQP.jpg")
                 .build();
 
         when(supermarketRepository.save(supermarket)).thenReturn(supermarket);
