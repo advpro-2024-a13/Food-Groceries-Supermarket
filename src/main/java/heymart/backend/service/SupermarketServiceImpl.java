@@ -40,4 +40,9 @@ public class SupermarketServiceImpl implements SupermarketService {
     public void deleteById(Long id) {
         supermarketRepository.deleteById(id);
     }
+
+    @Override
+    public Supermarket findByOwnerId(long ownerId){
+        return supermarketRepository.findByOwnerId(ownerId);
+    };
 }

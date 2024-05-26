@@ -45,6 +45,11 @@ public class SupermarketController {
                 });
     }
 
+    @GetMapping("/findByOwnerId/{id}")
+    public ResponseEntity<Supermarket> getSupermarketByOwnerId(@PathVariable Long id) {
+        return ResponseEntity.ok(supermarketService.findByOwnerId(id));
+    }
+
     @PutMapping("edit/{id}")
     public ResponseEntity<String> editSupermarket(@PathVariable Long id, @RequestBody Supermarket editedSupermarket) {
         Supermarket existingSupermarket = supermarketService.findById(id).join();
